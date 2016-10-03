@@ -1,0 +1,61 @@
+#root {
+    padding: 10px;
+}
+
+/*BUTTONS AND FORMS*/
+button, input, select, .choice {
+    font-size: 1.2em;
+    border-radius: 2px;
+    border: 1px solid gray;
+    margin: 10px;
+    background-color: aliceblue;
+}
+input[type='text'], select, .choice {
+    box-sizing: border-box;
+    padding: 5px;
+    width: 90%;
+    display: block;
+}
+
+.single-button {
+    font-size: 25px;
+    height: 30px;
+    border-radius: 20px;
+}
+.single-button:hover:after {
+    font-size: 14px;
+    vertical-align: middle;
+}
+.cancel {
+    float: right;
+}
+.cancel:hover:after {
+    content: ' cancel';
+}
+.create-todo {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+}
+.create-todo:hover:after {
+    content: ' create new';
+}
+
+label {
+    display: block;
+    padding: 10px 3px;
+    font-weight: 500;
+}
+button, label {
+    cursor: pointer;
+}
+
+/* POSITIONING & LAYOUT */
+/*.flex-space-between {
+    display: flex;
+    justify-content: space-between;
+}
+*/
+.container {
+    margin-left: 10px;
+}

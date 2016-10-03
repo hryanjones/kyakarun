@@ -1,0 +1,34 @@
+{
+  "name": "kyakarun",
+  "version": "0.1.0",
+  "description": "A web based app to help you decide what to do right now.",
+  "main": "src/index.js",
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  },
+  "devDependencies": {
+    "react-scripts": "0.6.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hryanjones/kyakarun.git"
+  },
+  "keywords": [
+    "todo",
+    "web",
+    "app"
+  ],
+  "author": "H. Ryan Jones",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hryanjones/kyakarun/issues"
+  },
+  "homepage": "https://github.com/hryanjones/kyakarun#readme"
+}
