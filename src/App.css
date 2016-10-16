@@ -1,3 +1,7 @@
+body {
+    font-family: helvetica;
+}
+
 #root {
     padding: 10px;
 }
@@ -18,8 +22,8 @@ input[type='text'], select, .choice {
 }
 
 .single-button {
-    font-size: 25px;
-    height: 30px;
+    font-size: 35px; // TODO might need tweaking
+    height: 40px;
     border-radius: 20px;
 }
 .single-button:hover:after {
