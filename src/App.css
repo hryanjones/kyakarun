@@ -1,65 +1,74 @@
 body {
-    font-family: helvetica;
+  font-family: helvetica;
 }
 
 #root {
-    padding: 10px;
+  padding: 10px;
 }
 
 /*BUTTONS AND FORMS*/
-button, input, select, .choice {
-    font-size: 1.2em;
-    border-radius: 2px;
-    border: 1px solid gray;
-    margin: 10px;
-    background-color: aliceblue;
+button, input, select, .choice, .activity {
+  font-size: 1.2em;
+  border-radius: 2px;
+  /*border: 1px solid gray;*/
+  margin: 10px;
+  background-color: aliceblue;
 }
-input[type='text'], select, .choice {
-    box-sizing: border-box;
-    padding: 5px;
-    width: 90%;
-    display: block;
+input, select, .choice, .activity {
+  border: none;
+}
+input[type='text'], select, .choice, .activity {
+  box-sizing: border-box;
+  padding: 5px;
+  width: 90%;
+  display: block;
 }
 
 .single-button {
-    font-size: 35px; // TODO might need tweaking
-    height: 40px;
-    border-radius: 20px;
-}
-.single-button:hover:after {
-    font-size: 14px;
-    vertical-align: middle;
+  font-size: 44px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
 }
 .cancel {
-    float: right;
+  float: right;
 }
-.cancel:hover:after {
-    content: ' cancel';
+.cancel > span {
+  display: inline-block;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
+
+.activities-list {
+  font-size: 30px;
+  position: fixed;
+  bottom: 10px;
+}
+
 .create-todo {
-    position: fixed;
-    right: 10px;
-    bottom: 10px;
-}
-.create-todo:hover:after {
-    content: ' create new';
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
 }
 
 label {
-    display: block;
-    padding: 10px 3px;
-    font-weight: 500;
+  display: block;
+  padding: 10px 3px;
+  font-weight: 500;
 }
 button, label {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 /* POSITIONING & LAYOUT */
-/*.flex-space-between {
+.flex-space-between {
     display: flex;
     justify-content: space-between;
 }
-*/
+
 .container {
-    margin-left: 10px;
+  margin-left: 10px;
 }

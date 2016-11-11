@@ -3,27 +3,15 @@ import LocalStorageMixin from 'react-localstorage';
 // import moment from 'moment';
 
 import './App.css';
+import Activities from './Activities';
 import EditActivity from './EditActivity';
 import What from './What';
-
-import minutesToHumanString from './minutesToHumanString';
-
-const TODOS = [ // LEGACY
-  // {name: 'Meditate', idealTime: 15},
-  // {name: 'Twitter or Inoreader', idealTime: 5},
-  // {name: 'Study Hindi', idealTime: 15},
-  // {name: 'Stretch', idealTime: 15},
-  // {name: 'Emails', idealTime: 30},
-  // {name: 'Listen to Alan Watts', idealTime: 30},
-  // {name: 'Do some push ups', idealTime: 5},
-];
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      todos: TODOS, // LEGACY
-      activities: {}, // main store of activites -> LocalStorage
+      activities: {}, // main store of activities -> LocalStorage
 
       // this is actually an object of objects first key is ideal time minutes, second key is activity name
       idealTimes: {}, // idealTime (minutes) to activity name lookup -> LocalStorage
@@ -36,62 +24,36 @@ class App extends Component {
     };
 
     this.componentDidMount = LocalStorageMixin.componentDidMount.bind(this);
+    this.componentWillUpdate = LocalStorageMixin.componentWillUpdate.bind(this);
     this._updateActivity = this._updateActivity.bind(this);
   }
 
   getStateFilterKeys() {
-    return ['todos', 'activities', 'idealTimes']; // LEGACY, remove todos
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const {todos} = this.state;
-    LocalStorageMixin.componentWillUpdate.bind(this)(nextProps, nextState);
-
-    // convert our array of TODOS to an object (to make it easier to edit and stuff)
-    if (todos) { // LEGACY, can be deleted after 1st use
-      const activities = {};
-      const idealTimes = {};
-      const created = getNowISOString();
-      todos.forEach(todo => {
-        const {idealTime, name} = todo;
-        activities[name] = {created};
-        addToIdealTimes(idealTimes, idealTime, name);
-      });
-
-      this.setState({todos: null, activites, idealTimes});
-    }
+    return ['activities', 'idealTimes'];
   }
 
   componentDidUpdate() {
-    // FIXME move creating/editing to a new component
     if (this.state.mode === 'create' && this.refs.activityName) { // when we're creating/editing
       this.refs.activityName.select(); // put focus in the activity's name box
     }
   }
 
   render() {
-    const {todos, activites, idealTimes, mode, time} = this.state;
-
-    const times = Object.keys(idealTimes)
-      .map(t => parseInt(t, 10)) // make sure it's an int (object keys are strings, I think)
-      .sort((a, b) => a - b); // sort numerically instead of alphabetically
+    const {activities, idealTimes, mode} = this.state;
 
     let body, header;
-    if (!times.length) {
-      header = <h1>No things to do, create one</h1>;
-    }
 
     const devTODOs = <div className="TODOs">
       # YOU"RE IN A WEIRD STATE, HERE ARE THE TODOS FOR THIS APP<br/>
       <br/>
       # TODO<br/>
-      * break things up into smaller components<br/>
-      * use an object to store todos, I mean activites<br/>
+      * View & Edit existing tasks (delete goes to same place as done -> archive)<br/>
       * do weighted choice... Array with values equal to object, repeats for higher priority, & result being the same object.<br/>
       * Also select tasks at next level up or down at smaller weighted rate<br/>
-      * View & Edit existing tasks (delete goes to same place as done -> archive)<br/>
       * Timer screen when say "okay"<br/>
       * Make it so you can add 1-time & recurring things<br/>
+      * ~~break things up into smaller components~~<br/>
+      * ~~use an object to store todos, I mean activities~~<br/>
       * ~~Has to be really easy to add a task (big + always visible on bottom right)~~<br/>
       * ~~Each thing should have a time range associated with it (any by default)~~<br/>
       * ~~local storage~~<br/>
@@ -109,6 +71,9 @@ class App extends Component {
     else if (mode === 'create') {
       body = <EditActivity activities={activities} updateActivity={this._updateActivity} />;
     }
+    else if (mode === 'list') {
+      body = <Activities activities={activities}/>;
+    }
     else {
       body = devTODOs;
     }
@@ -121,10 +86,26 @@ class App extends Component {
             onClick={() => this.setState({mode: 'what'})}
             className='single-button cancel'
             >
-            X
+            <span>+</span>
           </button>
         : null}
         {body}
+        {mode !== 'create' ?
+          <button
+            className="create-todo single-button"
+            onClick={() => this.setState({mode: 'create'})}
+            >
+            +
+          </button>
+        : null}
+        {mode !== 'list'  && Object.keys(idealTimes).length ?
+          <button
+            className="activities-list single-button"
+            onClick={() => this.setState({mode: 'list'})}
+            >
+            ☰
+          </button>
+        : null}
       </div>
     );
   }
@@ -138,7 +119,7 @@ class App extends Component {
     const {activities, idealTimes} = this.state;
 
     const created = getNowISOString();
-    activities[name] = {created};
+    activities[name] = {created, idealTime};
     addToIdealTimes(idealTimes, idealTime, name);
     this.setState({
       mode: 'what',

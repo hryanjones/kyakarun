@@ -1,4 +1,5 @@
 import minutesToHumanString from './minutesToHumanString';
+import idealTimesToTimes from './idealTimesToTimes';
 import React, {Component} from 'react';
 
 class What extends Component {
@@ -22,27 +23,30 @@ class What extends Component {
   render() {
     const {activites, idealTimes} = this.props;
     const {rejected, time} = this.state;
+    const times = idealTimesToTimes(idealTimes);
 
     let suggestion;
     if (time) {
       suggestion = _getSuggestion(time, idealTimes, activites, rejected);
-      console.log('suggestion', suggestion)
-      console.log('rejected', rejected)
     }
 
     return (
       <div>
-        <h1>{_getHeader(time, suggestion, rejected)}</h1>
+        <h1>{_getHeader(times, time, suggestion, rejected)}</h1>
         {suggestion ?
           <div className='container'>
-            <h2>{suggestion.name}</h2>
-            <p className='container'>it's good to do this for {minutesToHumanString(time)} or so</p>
+            <h2>{suggestion}</h2>
+            <p className='container'>
+              it's good to do this for {minutesToHumanString(time)} or so
+            </p>
             <div className='choices'>
               {/* TODO
               <button className='choice'>naw</button>
               <button className='choice'>can't</button>
               */}
-              <button className='choice' onClick={() => rejectSuggestion(suggestion.name) }>
+              <button className='choice' onClick={() =>
+                  this._rejectSuggestion(suggestion)
+                }>
                 not now
               </button>
               <button
@@ -57,7 +61,7 @@ class What extends Component {
           </div>
         :
           <form>
-            {!time ? // haven't chosen a task yet something yet
+            {!time ? // haven't chosen a task yet
               times.map(t =>
                 <label className='choice' key={t} onClick={() => this.setState({time: t})}>
                   <input type='radio'/> {minutesToHumanString(t)}
@@ -70,13 +74,7 @@ class What extends Component {
             }
           </form>
         }
-        {/*
-          Make this so it works any any page. The only page it won't be visible on is the create/edit page itself
-          <button className="create-todo single-button" onClick={() => this.setState({mode: 'create'})}>
-            +
-          </button>
-        */}
-      </div>;
+      </div>
     );
   }
 
@@ -92,13 +90,16 @@ class What extends Component {
 }
 
 function _getSuggestion(time, idealTimes, activities, rejected) {
-  const possibleActivityNames = Object.keys(idealTimes[time] || {}).filter(name => (!name in rejected));
+  const possibleActivityNames = Object.keys(idealTimes[time] || {}).filter(name => (!(name in rejected)));
   console.log('possibleActivityNames', possibleActivityNames)
   const choiceIndex = Math.floor(Math.random() * possibleActivityNames.length);
   return possibleActivityNames[choiceIndex];
 }
 
-function _getHeader(time, suggestion, rejected) {
+function _getHeader(times, time, suggestion, rejected) {
+  if (!times.length) {
+    return 'No things to do, create one';
+  }
   if (!time) {
     return 'How long do you have?';
   }
@@ -115,3 +116,5 @@ function _getHeader(time, suggestion, rejected) {
   }
   return 'hmm, maybe this?'; // all others
 }
+
+export default What;
