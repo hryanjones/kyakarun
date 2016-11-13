@@ -27,7 +27,8 @@ class What extends Component {
 
     let suggestion;
     if (time) {
-      suggestion = _getSuggestion(time, idealTimes, activites, rejected);
+      // suggestion = _getSuggestion(time, idealTimes, activites, rejected);
+      suggestion = _getWeightedSuggestion(time, idealTimes, activites, rejected);
     }
 
     return (
@@ -89,11 +90,71 @@ class What extends Component {
   }
 }
 
+// LEGACY
+// old suggestion picker, safe to remove unless the new one has 
+// cray cray bugs
 function _getSuggestion(time, idealTimes, activities, rejected) {
-  const possibleActivityNames = Object.keys(idealTimes[time] || {}).filter(name => (!(name in rejected)));
-  console.log('possibleActivityNames', possibleActivityNames)
+  const possibleActivityNames = Object.keys(idealTimes[time] || {})
+    .filter(name => (!(name in rejected)));
   const choiceIndex = Math.floor(Math.random() * possibleActivityNames.length);
   return possibleActivityNames[choiceIndex];
+}
+
+function _getWeightedSuggestion(time, idealTimes, activities, rejected) {
+  const sortedTimes = getSortedTimes(idealTimes);
+  const timeIndex = sortedTimes.indexOf(time);
+  validateTimeIndex(timeIndex);
+
+  // for exact time matches we give a weight of 2, they're twice as likely to come up as others
+  let possibilities = getPossibilitiesAtWeight(time, 2);
+
+  // add on activity names for other times at a lower weight
+  [sortedTimes[timeIndex - 1], sortedTimes[timeIndex + 1]].forEach(addNearbyPossibilities);
+
+  const choices = [];
+
+  // create choice array where the weighting of the choice is the number of times it's in the array
+  possibilities.forEach(addPossibilityToChoicesNTimes);
+
+  return pickOneChoice(choices);
+
+  function getSortedTimes(times) {
+    return Object.keys(times)
+      .map(n => parseInt(n, 10)) // object keys are strings, make 'em ints
+      .sort((a, b) => a - b); // number sort them
+  }
+
+  function validateTimeIndex(index) {
+    if (index === -1) {
+      throw new Error(`Couldn't find time (${time}) in sortedTimes (${sortedTimes}.`);
+    }
+  }
+
+  function addNearbyPossibilities(nearbyTime) {
+    if (!nearbyTime) return;
+    possibilities = possibilities.concat(
+      getPossibilitiesAtWeight(nearbyTime, 1)
+    );
+  }
+
+  function addPossibilityToChoicesNTimes(possibility) {
+    let n = possibility.weight;
+    while (n > 0) {
+      choices.push(possibility);
+        n -= 1;
+    }
+  }
+
+  function pickOneChoice(choices) {
+    const choiceIndex = Math.floor(Math.random() * choices.length);
+    return choices[choiceIndex].name;
+  }
+
+  function getPossibilitiesAtWeight(t, weight) {
+    return Object.keys(idealTimes[t] || [])
+      .filter(name => !(name in rejected))
+      .map(name => ({name, weight}));
+  }
 }
 
 function _getHeader(times, time, suggestion, rejected) {

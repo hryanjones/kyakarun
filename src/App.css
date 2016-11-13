@@ -6,18 +6,28 @@ body {
   padding: 10px;
 }
 
+.activities .flex-space-between {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+}
+
+.activity {
+  font-size: 1.2em;
+}
+
 /*BUTTONS AND FORMS*/
-button, input, select, .choice, .activity {
+button, input, select, .choice {
   font-size: 1.2em;
   border-radius: 2px;
   /*border: 1px solid gray;*/
   margin: 10px;
   background-color: aliceblue;
 }
-input, select, .choice, .activity {
+input, select, .choice {
   border: none;
 }
-input[type='text'], select, .choice, .activity {
+input[type='text'], select, .choice {
   box-sizing: border-box;
   padding: 5px;
   width: 90%;
@@ -29,10 +39,14 @@ input[type='text'], select, .choice, .activity {
   height: 50px;
   width: 50px;
   border-radius: 50%;
+  position: fixed;
 }
+
 .cancel {
-  float: right;
+  right: 10px;
+  top: 10px;
 }
+
 .cancel > span {
   display: inline-block;
   -webkit-transform: rotate(-45deg);
@@ -44,7 +58,6 @@ input[type='text'], select, .choice, .activity {
 
 .activities-list {
   font-size: 30px;
-  position: fixed;
   bottom: 10px;
 }
 

@@ -20,15 +20,17 @@ class App extends Component {
       // what -> what to do now?
       // list -> list the activities (edit will be accessible from here and also from a suggested task)
       mode: 'what',
-      archived: {}, // TODO (not used yet) this is where we store things that are done or deleted
+      // archived: {}, // TODO (not used yet) this is where we store things that are done or deleted
     };
 
     this.componentDidMount = LocalStorageMixin.componentDidMount.bind(this);
     this.componentWillUpdate = LocalStorageMixin.componentWillUpdate.bind(this);
     this._updateActivity = this._updateActivity.bind(this);
+    // this._toggleArchived = this._toggleArchived.bind(this);
   }
 
   getStateFilterKeys() {
+    // return ['activities', 'idealTimes', 'archived'];
     return ['activities', 'idealTimes'];
   }
 
@@ -39,7 +41,7 @@ class App extends Component {
   }
 
   render() {
-    const {activities, idealTimes, mode} = this.state;
+    const {activities, archived, idealTimes, mode} = this.state;
 
     let body, header;
 
@@ -72,7 +74,11 @@ class App extends Component {
       body = <EditActivity activities={activities} updateActivity={this._updateActivity} />;
     }
     else if (mode === 'list') {
-      body = <Activities activities={activities}/>;
+      body = <Activities
+        activities={activities}
+        archived={archived}
+        //toggle={this._toggleArchived}
+      />;
     }
     else {
       body = devTODOs;
@@ -81,7 +87,7 @@ class App extends Component {
     return (
       <div className="App">
         {header}
-        {mode !== 'what' ?
+        {mode !== 'what' ? // back button
           <button
             onClick={() => this.setState({mode: 'what'})}
             className='single-button cancel'
@@ -124,11 +130,27 @@ class App extends Component {
     this.setState({
       mode: 'what',
       time: null,
-      rejected: {}, // reset for funsies
       activities,
       idealTimes,
     });
   }
+
+  // _toggleArchived(name) {
+  //   const {activities, archived} = this.state;
+  //   const activity = activities[name];
+  //   const archivedActivity = archived[name];
+  //   const newActivities = Object.assign({}, activities);
+  //   const newArchived = Object.assign({}, archived);
+  //   if (activity) { // archive it
+  //     newArchived[name] = activity;
+  //     delete newActivities[name];
+  //   }
+  //   if (archivedActivity) {
+  //     newActivities[name] = activity;
+  //     delete newArchived[name];
+  //   }
+  //   this.setState({activities: newActivities, archived: newArchived});
+  // }
 }
 
 function addToIdealTimes(idealTimes, idealTime, activityName) {

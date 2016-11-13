@@ -50,6 +50,7 @@ class EditActivity extends Component {
   _updateActivity() {
     // FIXME
       // need to check here or somewhere else if there's an activity named the same and it's not the activity being edited
+      // also need to check archived activities
 
     const {activityName, activityIdealTime} = this.refs;
     const name = activityName.value;
