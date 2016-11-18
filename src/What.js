@@ -21,14 +21,14 @@ class What extends Component {
   }
 
   render() {
-    const {activites, idealTimes} = this.props;
+    const {activities} = this.props;
+    const idealTimes = activitiesToIdealTimes(activities);
     const {rejected, time} = this.state;
     const times = idealTimesToTimes(idealTimes);
 
     let suggestion;
     if (time) {
-      // suggestion = _getSuggestion(time, idealTimes, activites, rejected);
-      suggestion = _getWeightedSuggestion(time, idealTimes, activites, rejected);
+      suggestion = _getWeightedSuggestion(time, idealTimes, activities, rejected);
     }
 
     return (
@@ -38,7 +38,16 @@ class What extends Component {
           <div className='container'>
             <h2>{suggestion}</h2>
             <p className='container'>
-              it's good to do this for {minutesToHumanString(time)} or so
+              {activities[suggestion].idealTime === time ?
+                <span>
+                  it's good to do this for {minutesToHumanString(time)} or so
+                </span>
+              :
+                <span>
+                  might be good to do this for {minutesToHumanString(time) + ' '}
+                  (it's set to {minutesToHumanString(activities[suggestion].idealTime)})
+                </span>
+              }
             </p>
             <div className='choices'>
               {/* TODO
@@ -90,16 +99,6 @@ class What extends Component {
   }
 }
 
-// LEGACY
-// old suggestion picker, safe to remove unless the new one has 
-// cray cray bugs
-function _getSuggestion(time, idealTimes, activities, rejected) {
-  const possibleActivityNames = Object.keys(idealTimes[time] || {})
-    .filter(name => (!(name in rejected)));
-  const choiceIndex = Math.floor(Math.random() * possibleActivityNames.length);
-  return possibleActivityNames[choiceIndex];
-}
-
 function _getWeightedSuggestion(time, idealTimes, activities, rejected) {
   const sortedTimes = getSortedTimes(idealTimes);
   const timeIndex = sortedTimes.indexOf(time);
@@ -147,10 +146,12 @@ function _getWeightedSuggestion(time, idealTimes, activities, rejected) {
 
   function pickOneChoice(choices) {
     const choiceIndex = Math.floor(Math.random() * choices.length);
-    return choices[choiceIndex].name;
+    const {name} = choices[choiceIndex] || {};
+    return name;
   }
 
   function getPossibilitiesAtWeight(t, weight) {
+    console.log('here')
     return Object.keys(idealTimes[t] || [])
       .filter(name => !(name in rejected))
       .map(name => ({name, weight}));
@@ -176,6 +177,20 @@ function _getHeader(times, time, suggestion, rejected) {
     return 'okay, what about this?';
   }
   return 'hmm, maybe this?'; // all others
+}
+
+function activitiesToIdealTimes(activities) {
+  const idealTimes = {};
+  Object.keys(activities).forEach(addActivityToIdealTimes);
+  return idealTimes;
+
+  function addActivityToIdealTimes(name) {
+    const {idealTime} = activities[name];
+    if (!idealTimes[idealTime]) {
+      idealTimes[idealTime] = {};
+    }
+    idealTimes[idealTime][name] = true;
+  }
 }
 
 export default What;

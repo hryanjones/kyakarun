@@ -16,11 +16,17 @@ body {
   font-size: 1.2em;
 }
 
+.error {
+  padding: 10px;
+  border: 1px solid hsl(340, 82%, 52%);
+  color: hsl(340, 82%, 52%);
+  background-color: hsla(340, 82%, 52%, 0.05);
+}
+
 /*BUTTONS AND FORMS*/
 button, input, select, .choice {
   font-size: 1.2em;
   border-radius: 2px;
-  /*border: 1px solid gray;*/
   margin: 10px;
   background-color: aliceblue;
 }

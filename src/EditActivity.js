@@ -14,8 +14,7 @@ class EditActivity extends Component {
   constructor() {
     super();
     this.state = {
-      rejected: {}, // used to remove choices that have been rejected
-      time: null, // selected idealTime
+      error: '',
     };
   }
 
@@ -24,8 +23,9 @@ class EditActivity extends Component {
   }
 
   render() {
+    const {error} = this.state;
     return  (
-      <div>
+      <form onSubmit={this._updateActivity.bind(this)}>
         <h2>New activity</h2>
         <div>
           <label>
@@ -42,25 +42,51 @@ class EditActivity extends Component {
             </select>
           </label>
         </div>
-        <button onClick={this._updateActivity.bind(this)}>create</button>
-      </div>
+        <input type='submit' value='create'/>
+        {error ?
+          <div className='error'>{error}</div>
+        : null}
+      </form>
     );
   }
 
-  _updateActivity() {
-    // FIXME
-      // need to check here or somewhere else if there's an activity named the same and it's not the activity being edited
-      // also need to check archived activities
-
+  _updateActivity(e) {
+    e.preventDefault();
+    const {activities, archived} = this.props;
     const {activityName, activityIdealTime} = this.refs;
     const name = activityName.value;
     const idealTime = parseInt(activityIdealTime.value, 10);
-    if (!name || !idealTime || !Number.isFinite(idealTime)) {
-      // TODO show validation in the UI
-      return;
+
+    const existingActivity = activities[name];
+    const existingArchived = archived[name];
+
+    // validation
+    // FIXME need validation
+    const error = validateActivity(name, idealTime);
+    if (error) {
+      return this.setState({error});
     }
+
     this.props.updateActivity(name, idealTime);
+
+    return;
+
+    function validateActivity(name, idealTime) {
+      if (!name) {
+        return 'Please name your activity.';
+      }
+      if (existingActivity) {
+        return `There's already an activity with that name.`;
+      }
+      if (existingArchived) {
+        return `There's an archived activity with that name.`;
+      }
+      if (!Number.isFinite(idealTime)) {
+        return 'Please set an ideal time for your activity.';
+      }
+    }
   }
 }
+
 
 export default EditActivity;

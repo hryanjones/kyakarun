@@ -18,21 +18,20 @@ class Activities extends Component {
         {Object.keys(archived).length ?
           <div className='archived'>
             <h2>Archived activities</h2>
-            {this._renderActivities(archived)}
+            {this._renderActivities(archived, {archived: true})}
           </div>
         : null}
       </div>
     );
   }
 
-  _renderActivities(activities) {
-    // const {toggle} = this.props;
+  _renderActivities(activities, props={}) {
+    const {toggle} = this.props;
     return (
       <ul>
         {Object.keys(activities).map(name => {
           const data = activities[name];
-          // const props = {name, data, toggle, key: name};
-          const props = {name, data, key: name};
+          props = Object.assign(props, {name, data, toggle, key: name});
           return (<Activity {...props}/>);
         })}
       </ul>
