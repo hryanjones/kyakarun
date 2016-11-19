@@ -29,3 +29,17 @@ A web app to help you decide what's best to do right now.
 * ~~Has to be really easy to add a task (big + always visible on bottom right)~~
 * ~~Each thing should have a time range associated with it (any by default)~~
 * ~~local storage~~
+
+## Constraints
+* each activity can have "constraints"
+* examples:
+  * because I need "a quiet place" (e.g. meditate, stretch,)
+  * because I need "to be at home"
+  * because I need "an internet connection"
+  * because I need "a real computer"
+* in additon to "okay" option when an activity is suggested it should display two other options:
+  1. "can't"
+    * when this is displayed it should expand any existing constraints as options to select
+    * when one of these is selected, it should also add this to a "rejectedConstraints" state object which will filter out just like rejected does
+  2. "don't want to"
+    * Future: this should ask for a reason and log it. In the future can provide statistics and stuff

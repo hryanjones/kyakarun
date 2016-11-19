@@ -1,3 +1,4 @@
+import CantButton from './CantButton';
 import minutesToHumanString from './minutesToHumanString';
 import idealTimesToTimes from './idealTimesToTimes';
 import React, {Component} from 'react';
@@ -7,10 +8,12 @@ class What extends Component {
     super();
     this.state = {
       rejected: {}, // used to remove choices that have been rejected
+      rejectedConstraints: {}, // the name of a constraint that should filter out further suggestions
       time: null, // selected idealTime
     };
     this._resetSuggestion = this._resetSuggestion.bind(this);
     this._rejectSuggestion = this._rejectSuggestion.bind(this);
+    this._getWeightedSuggestion= this._getWeightedSuggestion.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -28,7 +31,7 @@ class What extends Component {
 
     let suggestion;
     if (time) {
-      suggestion = _getWeightedSuggestion(time, idealTimes, activities, rejected);
+      suggestion = _getWeightedSuggestion(time, idealTimes);
     }
 
     return (
@@ -50,15 +53,12 @@ class What extends Component {
               }
             </p>
             <div className='choices'>
-              {/* TODO
-              <button className='choice'>naw</button>
-              <button className='choice'>can't</button>
-              */}
               <button className='choice' onClick={() =>
                   this._rejectSuggestion(suggestion)
-                }>
-                not now
+              }>
+                  naw
               </button>
+              <CantButton suggestedActivity={activities[suggestion]} rejectSuggestion={_rejectSuggestion}/>
               <button
                 className='choice'
                 onClick={this._resetSuggestion}
@@ -89,72 +89,95 @@ class What extends Component {
   }
 
   _resetSuggestion() {
-    this.setState({rejected: {}, time: null});
+    this.setState({rejected: {}, rejectedConstraints: {}, time: null});
   }
 
-  _rejectSuggestion(suggestionName) {
-    const {rejected} = this.state;
-    rejected[suggestionName] = true; // mutating, but meh
-    this.setState({rejected});
-  }
-}
+  _rejectSuggestion(suggestionName, constraint) {
+    let {rejected, rejectedConstraints} = this.state;
+    rejected = Object.assign({}, rejected);
+    rejected[suggestionName] = true;
 
-function _getWeightedSuggestion(time, idealTimes, activities, rejected) {
-  const sortedTimes = getSortedTimes(idealTimes);
-  const timeIndex = sortedTimes.indexOf(time);
-  validateTimeIndex(timeIndex);
+    const update = {rejected};
 
-  // for exact time matches we give a weight of 2, they're twice as likely to come up as others
-  let possibilities = getPossibilitiesAtWeight(time, 2);
-
-  // add on activity names for other times at a lower weight
-  [sortedTimes[timeIndex - 1], sortedTimes[timeIndex + 1]].forEach(addNearbyPossibilities);
-
-  const choices = [];
-
-  // create choice array where the weighting of the choice is the number of times it's in the array
-  possibilities.forEach(addPossibilityToChoicesNTimes);
-
-  return pickOneChoice(choices);
-
-  function getSortedTimes(times) {
-    return Object.keys(times)
-      .map(n => parseInt(n, 10)) // object keys are strings, make 'em ints
-      .sort((a, b) => a - b); // number sort them
-  }
-
-  function validateTimeIndex(index) {
-    if (index === -1) {
-      throw new Error(`Couldn't find time (${time}) in sortedTimes (${sortedTimes}.`);
+    // if there was a constraint selected then add this to reasons to reject
+    if (constraint) {
+      rejectedConstraints = Object.assign({}, rejectedConstraints);
+      rejectedConstraints[constraint] = true;
+      update.rejectedConstraints = rejectedConstraints;
     }
+
+    this.setState(update);
   }
 
-  function addNearbyPossibilities(nearbyTime) {
-    if (!nearbyTime) return;
-    possibilities = possibilities.concat(
-      getPossibilitiesAtWeight(nearbyTime, 1)
-    );
-  }
+  _getWeightedSuggestion(time, idealTimes) {
+    const {activities} = this.props;
+    const {rejected, rejectedConstraints} = this.state;
+    const sortedTimes = getSortedTimes(idealTimes);
+    const timeIndex = sortedTimes.indexOf(time);
+    validateTimeIndex(timeIndex);
 
-  function addPossibilityToChoicesNTimes(possibility) {
-    let n = possibility.weight;
-    while (n > 0) {
-      choices.push(possibility);
-        n -= 1;
+    // for exact time matches we give a weight of 2, they're twice as likely to come up as others
+    let possibilities = getPossibilitiesAtWeight(time, 2);
+
+    // add on activity names for other times at a lower weight
+    [sortedTimes[timeIndex - 1], sortedTimes[timeIndex + 1]].forEach(addNearbyPossibilities);
+
+    const choices = [];
+
+    // create choice array where the weighting of the choice is the number of times it's in the array
+    possibilities.forEach(addPossibilityToChoicesNTimes);
+
+    return pickOneChoice(choices);
+
+    function getSortedTimes(times) {
+      return Object.keys(times)
+        .map(n => parseInt(n, 10)) // object keys are strings, make 'em ints
+        .sort((a, b) => a - b); // number sort them
     }
-  }
 
-  function pickOneChoice(choices) {
-    const choiceIndex = Math.floor(Math.random() * choices.length);
-    const {name} = choices[choiceIndex] || {};
-    return name;
-  }
+    function validateTimeIndex(index) {
+      if (index === -1) {
+        throw new Error(`Couldn't find time (${time}) in sortedTimes (${sortedTimes}.`);
+      }
+    }
 
-  function getPossibilitiesAtWeight(t, weight) {
-    console.log('here')
-    return Object.keys(idealTimes[t] || [])
-      .filter(name => !(name in rejected))
-      .map(name => ({name, weight}));
+    function addNearbyPossibilities(nearbyTime) {
+      if (!nearbyTime) return;
+      possibilities = possibilities.concat(
+        getPossibilitiesAtWeight(nearbyTime, 1)
+      );
+    }
+
+    function addPossibilityToChoicesNTimes(possibility) {
+      let n = possibility.weight;
+      while (n > 0) {
+        choices.push(possibility);
+          n -= 1;
+      }
+    }
+
+    function pickOneChoice(choices) {
+      const choiceIndex = Math.floor(Math.random() * choices.length);
+      const {name} = choices[choiceIndex] || {};
+      return name;
+    }
+
+    function getPossibilitiesAtWeight(t, weight) {
+      console.log('here')
+      return Object.keys(idealTimes[t] || [])
+        .filter(name => {
+          if (name in rejected) { // remove any that have been directly rejected
+            return false;
+          }
+
+          const {constraints} = activities[name];
+          if (!constraints) {
+            return true;
+          }
+          return !Object.keys(rejectedConstraints).some(c => c in constraints); // reject if it has a bad constraint
+        )
+        .map(name => ({name, weight}));
+    }
   }
 }
 

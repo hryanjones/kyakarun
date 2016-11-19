@@ -50,6 +50,8 @@ class EditActivity extends Component {
     );
   }
 
+  // FIXME for constraints -- need to move this validation to the top level component
+  // if update succeeds, it passes back nothing. if it fails it passes back an error string.
   _updateActivity(e) {
     e.preventDefault();
     const {activities, archived} = this.props;
