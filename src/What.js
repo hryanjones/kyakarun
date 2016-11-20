@@ -58,7 +58,11 @@ class What extends Component {
               }>
                   naw
               </button>
-              <CantButton suggestedActivity={activities[suggestion]} rejectSuggestion={_rejectSuggestion}/>
+              <CantButton
+                activityName={suggestion}
+                activity={activities[suggestion]}
+                rejectSuggestion={_rejectSuggestion}
+              />
               <button
                 className='choice'
                 onClick={this._resetSuggestion}
@@ -93,20 +97,27 @@ class What extends Component {
   }
 
   _rejectSuggestion(suggestionName, constraint) {
-    let {rejected, rejectedConstraints} = this.state;
+    let {rejected, rejectedConstraints, activities, addActivityConstraint} = this.state;
     rejected = Object.assign({}, rejected);
     rejected[suggestionName] = true;
 
     const update = {rejected};
 
     // if there was a constraint selected then add this to reasons to reject
-    if (constraint) {
-      rejectedConstraints = Object.assign({}, rejectedConstraints);
-      rejectedConstraints[constraint] = true;
-      update.rejectedConstraints = rejectedConstraints;
+    if (!constraint) {
+      this.setState(update);
     }
 
+    rejectedConstraints = Object.assign({}, rejectedConstraints);
+    rejectedConstraints[constraint] = true;
+    update.rejectedConstraints = rejectedConstraints;
     this.setState(update);
+
+    const {constraints} = activities[suggestionName] || {};
+    const activityDoesntHaveConstraint = !constraints || !constraints[constraint];
+    if (activityDoesntHaveConstraint) {
+      this.props.addActivityConstraint(suggestionName, constraint);
+    }
   }
 
   _getWeightedSuggestion(time, idealTimes) {

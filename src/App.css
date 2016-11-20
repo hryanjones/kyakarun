@@ -40,6 +40,10 @@ input[type='text'], select, .choice {
   display: block;
 }
 
+.constraint {
+  margin-left: 20px; /* extra left margin to indent constraints*/
+}
+
 .single-button {
   font-size: 44px;
   height: 50px;
