@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   render() {
-    const {activities, archived, mode, addActivityConstraint} = this.state;
+    const {activities, archived, mode} = this.state;
 
     let body, header;
 
@@ -49,7 +49,7 @@ class App extends Component {
     if (mode === 'what') {
       body = <What
         activities={activities}
-        addActivityConstraint={addActivityConstraint}
+        addActivityConstraint={this.addActivityConstraint}
       />;
     }
     else if (mode === 'create') {
@@ -122,15 +122,15 @@ class App extends Component {
 
   // wow it is really hard to update a constraint in a non-mutating way :(
   addActivityConstraint(name, newConstraint) {
-    const {activities} = this.state;
-    const activity = activities[name];
+    let {activities} = this.state;
+    let activity = activities[name];
     if (!activity) {
       throw new Error('No activity to add a constraint to for the given activity name: ' + name);
     }
     const constraints = Object.assign({}, activity.constraints);
     constraints[newConstraint] = true;
-    const activity = Object.assign({}, activity, constraints);
-    const activities = Object.assign({}, activities, {[name]: activity});
+    activity = Object.assign({}, activity, {constraints});
+    activities = Object.assign({}, activities, {[name]: activity});
     this.setState({activities});
   }
 

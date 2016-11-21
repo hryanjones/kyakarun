@@ -36,12 +36,24 @@ input, select, .choice {
 input[type='text'], select, .choice {
   box-sizing: border-box;
   padding: 5px;
-  width: 90%;
+  width: 95%;
   display: block;
+}
+
+.reason {
+  font-weight: bold;
+  font-style: italic;
 }
 
 .constraint {
   margin-left: 20px; /* extra left margin to indent constraints*/
+}
+.constraint-inline {
+  display: flex;
+  align-items: baseline;
+}
+.constraint-inline input[type="text"] {
+  flex-grow: 1;
 }
 
 .single-button {

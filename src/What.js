@@ -13,7 +13,7 @@ class What extends Component {
     };
     this._resetSuggestion = this._resetSuggestion.bind(this);
     this._rejectSuggestion = this._rejectSuggestion.bind(this);
-    this._getWeightedSuggestion= this._getWeightedSuggestion.bind(this);
+    this._getWeightedSuggestion = this._getWeightedSuggestion.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -31,7 +31,7 @@ class What extends Component {
 
     let suggestion;
     if (time) {
-      suggestion = _getWeightedSuggestion(time, idealTimes);
+      suggestion = this._getWeightedSuggestion(time, idealTimes);
     }
 
     return (
@@ -61,7 +61,7 @@ class What extends Component {
               <CantButton
                 activityName={suggestion}
                 activity={activities[suggestion]}
-                rejectSuggestion={_rejectSuggestion}
+                rejectSuggestion={this._rejectSuggestion}
               />
               <button
                 className='choice'
@@ -97,7 +97,8 @@ class What extends Component {
   }
 
   _rejectSuggestion(suggestionName, constraint) {
-    let {rejected, rejectedConstraints, activities, addActivityConstraint} = this.state;
+    const {activities, addActivityConstraint} = this.props;
+    let {rejected, rejectedConstraints} = this.state;
     rejected = Object.assign({}, rejected);
     rejected[suggestionName] = true;
 
@@ -106,6 +107,7 @@ class What extends Component {
     // if there was a constraint selected then add this to reasons to reject
     if (!constraint) {
       this.setState(update);
+      return;
     }
 
     rejectedConstraints = Object.assign({}, rejectedConstraints);
@@ -116,7 +118,7 @@ class What extends Component {
     const {constraints} = activities[suggestionName] || {};
     const activityDoesntHaveConstraint = !constraints || !constraints[constraint];
     if (activityDoesntHaveConstraint) {
-      this.props.addActivityConstraint(suggestionName, constraint);
+      addActivityConstraint(suggestionName, constraint);
     }
   }
 
@@ -174,7 +176,6 @@ class What extends Component {
     }
 
     function getPossibilitiesAtWeight(t, weight) {
-      console.log('here')
       return Object.keys(idealTimes[t] || [])
         .filter(name => {
           if (name in rejected) { // remove any that have been directly rejected
@@ -186,7 +187,7 @@ class What extends Component {
             return true;
           }
           return !Object.keys(rejectedConstraints).some(c => c in constraints); // reject if it has a bad constraint
-        )
+        })
         .map(name => ({name, weight}));
     }
   }
