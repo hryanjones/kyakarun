@@ -1,11 +1,15 @@
+// Libs
 import React, {Component} from 'react';
 import LocalStorageMixin from 'react-localstorage';
-// import moment from 'moment';
 
+// components
 import './App.css';
 import Activities from './Activities';
 import EditActivity from './EditActivity';
 import What from './What';
+
+// helpers
+import minutesLeftInActivity from './minutesLeftInActivity';
 
 class App extends Component {
   constructor() {
@@ -20,6 +24,9 @@ class App extends Component {
       // list -> list the activities (edit will be accessible from here and also from a suggested task)
       mode: 'what',
       archived: {}, // this is where we store things that are done or deleted
+
+      activityName: null, // if an activity is chosen it'll be savaed here until replaced or reset
+      activityStartTime: null, // ISO8601 string timestamp of activity start for displaying time left (and resetting when that gets to 0)
     };
 
     this.componentDidMount = LocalStorageMixin.componentDidMount.bind(this);
@@ -27,10 +34,12 @@ class App extends Component {
     this._updateActivity = this._updateActivity.bind(this);
     this._toggleArchived = this._toggleArchived.bind(this);
     this.addActivityConstraint = this.addActivityConstraint.bind(this);
+    this._resetActiveActivity = this._resetActiveActivity.bind(this);
+    this._setActiveActivity = this._setActiveActivity.bind(this);
   }
 
   getStateFilterKeys() {
-    return ['activities', 'archived'];
+    return ['activities', 'archived', 'activityName', 'activityStartTime'];
   }
 
   componentDidUpdate() {
@@ -40,16 +49,27 @@ class App extends Component {
   }
 
   render() {
-    const {activities, archived, mode} = this.state;
+    const {activityName, activityStartTime, activities, archived, mode} = this.state;
 
-    let body, header;
+    let body;
 
-    const devTODOs = <div>YOU'RE IN A WEIRD STATE</div>;
+    if (minutesLeftInActivity(activityName, activities, activityStartTime) > 0) {
+      body = <TimeLeft
+        activityName={activityName}
+        activities={activites}
+        startTime={activityStartTime}
+        reset={this._resetActiveActivity}
+      />;
+      if (body) {
+        return [body, <BackButton onClick={this._resetActiveActivity} />];
+      }
+    }
 
     if (mode === 'what') {
       body = <What
         activities={activities}
         addActivityConstraint={this.addActivityConstraint}
+        acceptSuggestion={this._setActiveActivity}
       />;
     }
     else if (mode === 'create') {
@@ -68,20 +88,12 @@ class App extends Component {
         toggle={this._toggleArchived}
       />;
     }
-    else {
-      body = devTODOs;
-    }
 
     return (
       <div className="App">
         {header}
         {mode !== 'what' ? // back button
-          <button
-            onClick={() => this.setState({mode: 'what'})}
-            className='single-button cancel'
-            >
-            <span>+</span>
-          </button>
+          <BackButton onClick={() => this.setState({mode: 'what'})} />
         : null}
         {body}
         {mode !== 'create' ?
@@ -149,6 +161,15 @@ class App extends Component {
       delete newArchived[name];
     }
     this.setState({activities: newActivities, archived: newArchived});
+  }
+
+  _resetActiveActivity() {
+    this.setState({activityName: null, activityStartTime: null});
+  }
+
+  _setActiveActivity(activityName) {
+    const activityStartTime = getNowISOString();
+    this.setState({activityName, activityStartTime});
   }
 }
 

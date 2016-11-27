@@ -4,16 +4,18 @@ A web app to help you decide what's best to do right now.
 ----
 
 ## TODOs in rough prioirity order
-* View & Edit existing tasks (goes to same place as done -> archive)
-* Add priority as a new prop on activities and change the weighting
+* Timer screen when say "okay" -- NEEDS TESTING
+
+* View & Edit existing tasks
 * Create a top bar with branding and menu
   * X button will become a right-facing arrow that takes the place of the menu
   * only menu item currently will be to list activities
 * Add a settings section in the menu
   * only setting right now is whether or not to mix activities from nearby times
-* Mix from times that are directly nearby *only* (reuse TIME_BREAK_POINTS)
-* Timer screen when say "okay"
+* Add default options under "can't" that include that "X minutes is too short/long for Y" if the activity idealtime doesn't match the suggested time
+* Add priority as a new prop on activities and change the weighting
 * Make it so you can add 1-time tasks that get archived when they're complete
+* on selecting "naw" could ask for an optional reason why not (doubles the number of clicks to reject, is worth it?)
 
 ### Nice to haves
 * notification on the top (have to allow site to send notifications)
@@ -30,16 +32,5 @@ A web app to help you decide what's best to do right now.
 * ~~Each thing should have a time range associated with it (any by default)~~
 * ~~local storage~~
 
-## Constraints
-* each activity can have "constraints"
-* examples:
-  * because I need "a quiet place" (e.g. meditate, stretch,)
-  * because I need "to be at home"
-  * because I need "an internet connection"
-  * because I need "a real computer"
-* in additon to "okay" option when an activity is suggested it should display two other options:
-  1. "can't"
-    * when this is displayed it should expand any existing constraints as options to select
-    * when one of these is selected, it should also add this to a "rejectedConstraints" state object which will filter out just like rejected does
-  2. "don't want to"
-    * Future: this should ask for a reason and log it. In the future can provide statistics and stuff
+### Not going to do
+* ~~Mix from times that are directly nearby *only* (reuse TIME_BREAK_POINTS)~~

@@ -1,14 +1,6 @@
 import React, {Component} from 'react';
 import minutesToHumanString from './minutesToHumanString';
-
-const TIME_BREAK_POINTS = [
-  5,
-  15,
-  30,
-  60,  // 1 hr
-  90,  // 1 hr 30 mins
-  120, // 2 hrs
-];
+import {TIME_BREAK_POINTS} from './constants';
 
 class EditActivity extends Component {
   constructor() {

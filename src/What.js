@@ -24,7 +24,7 @@ class What extends Component {
   }
 
   render() {
-    const {activities} = this.props;
+    const {activities, acceptSuggestion} = this.props;
     const idealTimes = activitiesToIdealTimes(activities);
     const {rejected, time} = this.state;
     const times = idealTimesToTimes(idealTimes);
@@ -65,9 +65,11 @@ class What extends Component {
               />
               <button
                 className='choice'
-                onClick={this._resetSuggestion}
-                // TODO improve so this logs a time on the activity
-                // also want it to go to a screen where there's a timer to the end of the activity
+                onClick={() => {
+                  acceptSuggestion(suggestion);
+                  this._resetSuggestion();
+                }}
+                // TODO improve so this logs adds some info to a log
                 >
                 okay
               </button>
@@ -176,7 +178,7 @@ class What extends Component {
     }
 
     function getPossibilitiesAtWeight(t, weight) {
-      return Object.keys(idealTimes[t] || [])
+      return Object.keys(idealTimes[t] || {})
         .filter(name => {
           if (name in rejected) { // remove any that have been directly rejected
             return false;
