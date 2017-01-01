@@ -1,5 +1,5 @@
 // Libs
-import React, {Component} from 'react';
+import React from 'react';
 import LocalStorageMixin from 'react-localstorage';
 
 // components
@@ -11,7 +11,7 @@ import What from './What';
 // helpers
 import minutesLeftInActivity from './minutesLeftInActivity';
 
-class App extends Component {
+class App extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -25,17 +25,23 @@ class App extends Component {
       mode: 'what',
       archived: {}, // this is where we store things that are done or deleted
 
-      activityName: null, // if an activity is chosen it'll be savaed here until replaced or reset
+      activityName: null, // if an activity is chosen or is being edited it'll be saved here until replaced or reset
       activityStartTime: null, // ISO8601 string timestamp of activity start for displaying time left (and resetting when that gets to 0)
     };
 
     this.componentDidMount = LocalStorageMixin.componentDidMount.bind(this);
     this.componentWillUpdate = LocalStorageMixin.componentWillUpdate.bind(this);
-    this._updateActivity = this._updateActivity.bind(this);
-    this._toggleArchived = this._toggleArchived.bind(this);
-    this.addActivityConstraint = this.addActivityConstraint.bind(this);
-    this._resetActiveActivity = this._resetActiveActivity.bind(this);
-    this._setActiveActivity = this._setActiveActivity.bind(this);
+
+    [
+      '_updateActivity',
+      '_toggleArchived',
+      'addActivityConstraint',
+      '_resetActiveActivity',
+      '_setActiveActivity',
+    ]
+    .forEach(fcn => {
+      this[fcn] = this[fcn].bind(this);
+    });
   }
 
   getStateFilterKeys() {
@@ -77,6 +83,7 @@ class App extends Component {
         <EditActivity
           activities={activities}
           archived={archived}
+          activityToEdit={activityName}
           updateActivity={this._updateActivity}
         />
       );
@@ -86,6 +93,7 @@ class App extends Component {
         activities={activities}
         archived={archived}
         toggle={this._toggleArchived}
+        edit={name => this.setState({mode: 'create', activityName: name})}
       />;
     }
 
@@ -120,15 +128,26 @@ class App extends Component {
     this.setState({time});
   }
 
-  _updateActivity(name, idealTime) {
+  _updateActivity(name, idealTime, oldName) {
     const {activities} = this.state;
+    const newActivities = Object.assign({}, activities);
 
-    const created = getNowISOString();
-    activities[name] = {created, idealTime};
+    if (!oldName) { // creating a new activity
+      newActivities[name] = {idealTime, created: getNowISOString()};
+    } else {
+      // updating an existing activity
+      const activity = activities[oldName];
+      newActivities[name] = Object.assign({}, activity, {idealTime, updated: getNowISOString()});
+      if (name !== oldName) {
+        delete newActivities[oldName];
+      }
+    }
+
     this.setState({
+      activities: newActivities
       mode: 'what',
       time: null,
-      activities,
+      activityName: null,
     });
   }
 

@@ -7,7 +7,6 @@ const TIME_BREAK_POINTS = [
   120, // 2 hrs
 ];
 
-export default {
-    MS_PER_MINUTE; 60/*seconds per minute*/ * 1000/*milliseconds per second*/,
-    TIME_BREAK_POINTS,
-};
+const MS_PER_MINUTE = 60/*seconds per minute*/ * 1000/*milliseconds per second*/;
+
+export default {MS_PER_MINUTE, TIME_BREAK_POINTS};

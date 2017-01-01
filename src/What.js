@@ -1,9 +1,9 @@
 import CantButton from './CantButton';
 import minutesToHumanString from './minutesToHumanString';
 import idealTimesToTimes from './idealTimesToTimes';
-import React, {Component} from 'react';
+import React from 'react';
 
-class What extends Component {
+class What extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -36,10 +36,10 @@ class What extends Component {
 
     return (
       <div>
-        <h1>{_getHeader(times, time, suggestion, rejected)}</h1>
+        {_getHeader(times, time, suggestion, rejected)}
         {suggestion ?
           <div className='container'>
-            <h2>{suggestion}</h2>
+            <h1>{suggestion}</h1>
             <p className='container'>
               {activities[suggestion].idealTime === time ?
                 <span>
@@ -197,23 +197,25 @@ class What extends Component {
 
 function _getHeader(times, time, suggestion, rejected) {
   if (!times.length) {
-    return 'No things to do, create one';
+    return <h2>
+      Add some activities with the <strong>+</strong> button
+    </h2>;
   }
   if (!time) {
-    return 'How long do you have?';
+    return <h1>How long do you have?</h1>;
   }
   if (!suggestion) {
-    return 'I\'m all out of options :(';
+    return <h1>I'm all out of options :(</h1>;
   }
 
   const numRejected = Object.keys(rejected).length;
   if (!numRejected) { // first suggestion
-    return 'Maybe do this?';
+    return <h2>Maybe do this?</h2>;
   }
   if (numRejected === 1) { // second
-    return 'okay, what about this?';
+    return <h2>okay, what about this?</h2>;
   }
-  return 'hmm, maybe this?'; // all others
+  return <h2>hmm, maybe this?</h2>; // all others
 }
 
 function activitiesToIdealTimes(activities) {

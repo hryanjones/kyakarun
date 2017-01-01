@@ -7,7 +7,7 @@ class Activity extends Component {
     this.state = null; // no state in this component, right?
   }
   render() {
-    const {name, data, archived, toggle} = this.props;
+    const {name, data, archived, toggle, edit} = this.props;
     const {idealTime} = data;
     return (
       <li className='activity'>
@@ -20,7 +20,11 @@ class Activity extends Component {
                 <button onClick={() => toggle(name)}>
                     {archived ? 'un' : ''}archive
                 </button>
-                {/*edit*/}
+                {!archived ?
+                  <button onClick={() => edit(name)}>
+                    edit
+                  </button>
+                : null}
             </div>
         </div>
       </li>
