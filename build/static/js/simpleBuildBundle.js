@@ -211,7 +211,7 @@ class Activity extends React.Component {
               {name}
             </div>
             <div>
-              ({minutesToHumanString(idealTime)})
+              ({minutesToHumanString(idealTime, 'shorten please')})
             </div>
           </div>
 
@@ -325,24 +325,34 @@ class App extends React.Component {
 
     return (
       <div className='App'>
-        {mode !== 'what' ? // back button
-          <BackButton onClick={() => this.setState({mode: 'what', activityName: null})} />
-        : null}
-        {body}
+        <div className='header'>
+          {mode === 'what' ?
+            <button
+              className='activities-list'
+              onClick={() => this.setState({mode: 'list'})}
+              >
+              ☰
+            </button>
+          :
+            <button // back button
+              className='cancel'
+              onClick={() => this.setState({mode: 'what', activityName: null})}
+              >
+              ↩
+            </button>
+          }
+          Kya Karun
+        </div>
+
+        <div className='body'>
+          {body}
+        </div>
         {mode !== 'create' ?
           <button
-            className="create-todo single-button"
+            className='create-todo single-button primary'
             onClick={() => this.setState({mode: 'create'})}
             >
             +
-          </button>
-        : null}
-        {mode !== 'list'  && (Object.keys(activities).length || Object.keys(archived).length) ?
-          <button
-            className="activities-list single-button"
-            onClick={() => this.setState({mode: 'list'})}
-            >
-            ☰
           </button>
         : null}
       </div>
@@ -423,25 +433,6 @@ function getNowISOString() {
 }
 
 
-
-
-class BackButton extends React.Component {
-  constructor() {
-    super();
-    this.state = null; // such stateless, wow
-  }
-  render() {
-    const {props} = this;
-    let {className} = props;
-    className = (className || '') + ' single-button cancel';
-
-    return (
-      <button {...props} className={className}>
-        <span>+</span>
-      </button>
-    );
-  }
-}
 
 
 // constraint suggestions
@@ -548,7 +539,7 @@ class EditActivity extends React.Component {
             </select>
           </label>
         </div>
-        <input type='submit' value={activityToEdit ? 'Update' : 'Create'}/>
+        <input className='primary' type='submit' value={activityToEdit ? 'Update' : 'Create'}/>
         {error ?
           <div className='error'>{error}</div>
         : null}
@@ -659,15 +650,18 @@ class What extends React.Component {
               <button className='choice' onClick={() =>
                   this._rejectSuggestion(suggestion)
               }>
-                  naw
+                not now
+                {/* naw */}
               </button>
+              {/*
               <CantButton
                 activityName={suggestion}
                 activity={activities[suggestion]}
                 rejectSuggestion={this._rejectSuggestion}
               />
+              */}
               <button
-                className='choice'
+                className='choice primary'
                 onClick={() => {
                   acceptSuggestion(suggestion);
                   this._resetSuggestion();
@@ -683,7 +677,7 @@ class What extends React.Component {
             {!time ? // haven't chosen a task yet
               times.map(t =>
                 <label className='choice' key={t} onClick={() => this.setState({time: t})}>
-                  <input type='radio'/> {minutesToHumanString(t)}
+                  {minutesToHumanString(t)}
                 </label>
               )
             :
@@ -892,25 +886,31 @@ function minutesLeftInActivity(activityName, activities, startTime) {
     return (endTime - startTime) / MS_PER_MINUTE;
 }
 
-function minutesToHumanString(minutes) {
+function minutesToHumanString(minutes, shouldShorten) {
   if (!Number.isFinite(minutes)) {
     throw new Error('`minutes` should be a finite number. You gave: ' + minutes);
   }
+  let hourText = shouldShorten ? 'h' : 'hour';
+  let minuteText = shouldShorten ? 'm' : 'minute';
   if (minutes < 60) {
-    return timeString('minute', minutes);
+    return timeString(minuteText, minutes);
   }
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
   if (!remainingMinutes) {
-    return timeString('hour', hours);
+    return timeString(hourText, hours);
   }
 
-  return timeString('hour', hours) + ' ' + timeString('minute', remainingMinutes);
+  return timeString(hourText, hours) + ' ' + timeString(minuteText, remainingMinutes);
+
+  function timeString(word, num) {
+    if (shouldShorten) {
+      return num + word;
+    }
+    return num + ' ' + pluralize(word, num);
+  }
 }
 
-function timeString(word, num) {
-  return num + ' ' + pluralize(word, num);
-}
 
 function pluralize(word, num) {
   if (num === 1) {

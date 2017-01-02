@@ -1,9 +1,29 @@
 body {
   font-family: helvetica;
+  margin: 0px;
+  background-color: #FFFAEE; /* light cream color */
+  color: #350072;
 }
 
-#root {
+.body {
+  margin-top: 45px; /* leave room for the header */
+  margin-bottom: 45px; /* leave room so we can scroll content above the + button */
   padding: 10px;
+}
+
+.header {
+  height: 45px;
+  background-color: #350072;
+  color: white;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-size: 1.8em;
+  display: flex;
+  align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .activities .flex-space-between {
@@ -52,12 +72,24 @@ button, input, select, .choice {
   font-size: 1.2em;
   border-radius: 2px;
   margin: 10px;
-  background-color: aliceblue;
+  background-color: white;
+  border: 2px solid #350072;
+  color: #350072;
 }
-input, select, .choice {
-  border: none;
+
+button.primary, .choice.primary, input.primary {
+  color: white;
+  background-color: #350072;
 }
-input[type='text'], select, .choice {
+
+label.choice {
+  margin-top: 20px;
+}
+button.choice {
+  margin-top: 50px; /* spread these out so it's easier to not miss */
+}
+
+input[type='submit'], input[type='text'], select, .choice {
   box-sizing: border-box;
   padding: 5px;
   width: 95%;
@@ -80,37 +112,25 @@ input[type='text'], select, .choice {
   flex-grow: 1;
 }
 
-.single-button {
-  font-size: 44px;
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  position: fixed;
-}
-
-.cancel {
-  right: 10px;
-  top: 10px;
-}
-
-.cancel > span {
-  display: inline-block;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg);
+.header button {
+  margin: 0px;
+  border: none;
+  background: transparent;
+  color: white;
 }
 
 .activities-list {
   font-size: 30px;
-  bottom: 10px;
 }
 
 .create-todo {
+  font-size: 42px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
   position: fixed;
-  right: 10px;
-  bottom: 10px;
+  right: 5px;
+  bottom: 5px;
 }
 
 label {

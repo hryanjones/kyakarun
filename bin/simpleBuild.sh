@@ -5,7 +5,6 @@ cat src/constants.js >> /tmp/pre-bundle.js
 cat src/Activities.js >> /tmp/pre-bundle.js
 cat src/Activity.js >> /tmp/pre-bundle.js
 cat src/App.js >> /tmp/pre-bundle.js
-cat src/BackButton.js >> /tmp/pre-bundle.js
 cat src/CantButton.js >> /tmp/pre-bundle.js
 cat src/EditActivity.js >> /tmp/pre-bundle.js
 cat src/idealTimesToTimes.js >> /tmp/pre-bundle.js

@@ -48,7 +48,7 @@ class EditActivity extends React.Component {
             </select>
           </label>
         </div>
-        <input type='submit' value={activityToEdit ? 'Update' : 'Create'}/>
+        <input className='primary' type='submit' value={activityToEdit ? 'Update' : 'Create'}/>
         {error ?
           <div className='error'>{error}</div>
         : null}

@@ -99,24 +99,34 @@ class App extends React.Component {
 
     return (
       <div className='App'>
-        {mode !== 'what' ? // back button
-          <BackButton onClick={() => this.setState({mode: 'what', activityName: null})} />
-        : null}
-        {body}
+        <div className='header'>
+          {mode === 'what' ?
+            <button
+              className='activities-list'
+              onClick={() => this.setState({mode: 'list'})}
+              >
+              ☰
+            </button>
+          :
+            <button // back button
+              className='cancel'
+              onClick={() => this.setState({mode: 'what', activityName: null})}
+              >
+              ↩
+            </button>
+          }
+          Kya Karun
+        </div>
+
+        <div className='body'>
+          {body}
+        </div>
         {mode !== 'create' ?
           <button
-            className="create-todo single-button"
+            className='create-todo single-button primary'
             onClick={() => this.setState({mode: 'create'})}
             >
             +
-          </button>
-        : null}
-        {mode !== 'list'  && (Object.keys(activities).length || Object.keys(archived).length) ?
-          <button
-            className="activities-list single-button"
-            onClick={() => this.setState({mode: 'list'})}
-            >
-            ☰
           </button>
         : null}
       </div>

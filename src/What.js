@@ -56,15 +56,18 @@ class What extends React.Component {
               <button className='choice' onClick={() =>
                   this._rejectSuggestion(suggestion)
               }>
-                  naw
+                not now
+                {/* naw */}
               </button>
+              {/*
               <CantButton
                 activityName={suggestion}
                 activity={activities[suggestion]}
                 rejectSuggestion={this._rejectSuggestion}
               />
+              */}
               <button
-                className='choice'
+                className='choice primary'
                 onClick={() => {
                   acceptSuggestion(suggestion);
                   this._resetSuggestion();
@@ -80,7 +83,7 @@ class What extends React.Component {
             {!time ? // haven't chosen a task yet
               times.map(t =>
                 <label className='choice' key={t} onClick={() => this.setState({time: t})}>
-                  <input type='radio'/> {minutesToHumanString(t)}
+                  {minutesToHumanString(t)}
                 </label>
               )
             :

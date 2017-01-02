@@ -19,7 +19,7 @@ class Activity extends React.Component {
               {name}
             </div>
             <div>
-              ({minutesToHumanString(idealTime)})
+              ({minutesToHumanString(idealTime, 'shorten please')})
             </div>
           </div>
 
