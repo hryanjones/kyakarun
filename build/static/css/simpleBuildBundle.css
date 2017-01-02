@@ -1,0 +1,133 @@
+body {
+  font-family: helvetica;
+}
+
+#root {
+  padding: 10px;
+}
+
+.activities .flex-space-between {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+}
+
+.activity {
+  font-size: 1.2em;
+}
+
+/* In Activities list show open-close chevrons for actions on activities */
+.activity input + div .activity-name:before {
+  content: '›';
+  font-size: 1.8em;
+  padding-right: 5px;
+}
+
+.activity input:checked + div .activity-name:before {
+  content: '⌄';
+}
+
+.activity-actions {
+  display: none;
+}
+
+.activity input:checked ~ div.activity-actions {
+  display: block;
+}
+
+.activities ul, .archived ul {
+  list-style: none;
+  -webkit-padding-start: 0; /* otherwise there's a left side margin*/
+}
+
+.error {
+  padding: 10px;
+  border: 1px solid hsl(340, 82%, 52%);
+  color: hsl(340, 82%, 52%);
+  background-color: hsla(340, 82%, 52%, 0.05);
+}
+
+/*BUTTONS AND FORMS*/
+button, input, select, .choice {
+  font-size: 1.2em;
+  border-radius: 2px;
+  margin: 10px;
+  background-color: aliceblue;
+}
+input, select, .choice {
+  border: none;
+}
+input[type='text'], select, .choice {
+  box-sizing: border-box;
+  padding: 5px;
+  width: 95%;
+  display: block;
+}
+
+.reason {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.constraint {
+  margin-left: 20px; /* extra left margin to indent constraints*/
+}
+.constraint-inline {
+  display: flex;
+  align-items: baseline;
+}
+.constraint-inline input[type="text"] {
+  flex-grow: 1;
+}
+
+.single-button {
+  font-size: 44px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  position: fixed;
+}
+
+.cancel {
+  right: 10px;
+  top: 10px;
+}
+
+.cancel > span {
+  display: inline-block;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.activities-list {
+  font-size: 30px;
+  bottom: 10px;
+}
+
+.create-todo {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+}
+
+label {
+  display: block;
+  padding: 10px 3px;
+  font-weight: 500;
+}
+button, label {
+  cursor: pointer;
+}
+
+/* POSITIONING & LAYOUT */
+.flex-space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container {
+  margin-left: 10px;
+}
