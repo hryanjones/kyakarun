@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
 import minutesToHumanString from './minutesToHumanString';
 import {TIME_BREAK_POINTS} from './constants';
 
-class EditActivity extends Component {
+class EditActivity extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -30,7 +30,7 @@ class EditActivity extends Component {
 
     return  (
       <form onSubmit={this._updateActivity.bind(this)}>
-        <h2>{activityToEdit ? 'New' : 'Edit'} activity</h2>
+        <h2>{activityToEdit ? 'Edit' : 'New'} activity</h2>
         <div>
           <label>
             Name:
@@ -91,7 +91,7 @@ class EditActivity extends Component {
         return `There's already an archived activity with that name.`;
       }
 
-      if (existingActivity && existingActivity !== activityToEdit) {
+      if (existingActivity && name !== activityToEdit) {
         return `There's already an activity with that name.`;
       }
     }

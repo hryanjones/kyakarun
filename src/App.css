@@ -16,6 +16,30 @@ body {
   font-size: 1.2em;
 }
 
+/* In Activities list show open-close chevrons for actions on activities */
+.activity input + div .activity-name:before {
+  content: '›';
+  font-size: 1.8em;
+  padding-right: 5px;
+}
+
+.activity input:checked + div .activity-name:before {
+  content: '⌄';
+}
+
+.activity-actions {
+  display: none;
+}
+
+.activity input:checked ~ div.activity-actions {
+  display: block;
+}
+
+.activities ul, .archived ul {
+  list-style: none;
+  -webkit-padding-start: 0; /* otherwise there's a left side margin*/
+}
+
 .error {
   padding: 10px;
   border: 1px solid hsl(340, 82%, 52%);

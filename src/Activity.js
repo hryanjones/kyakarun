@@ -1,7 +1,7 @@
 import minutesToHumanString from './minutesToHumanString';
-import React, {Component} from 'react';
+import React from 'react';
 
-class Activity extends Component {
+class Activity extends React.Component {
   constructor() {
     super();
     this.state = null; // no state in this component, right?
@@ -11,22 +11,29 @@ class Activity extends Component {
     const {idealTime} = data;
     return (
       <li className='activity'>
-        <div className='flex-space-between'>
-            <div className='activity-data'>
-              {name + ' '}
-              ({minutesToHumanString(idealTime)})
+        <label>
+          <input type='checkbox' style={{display: 'none'}}/>{/* for showing/hiding actions */}
+
+          <div className='activity-data flex-space-between' style={{alignItems: 'baseline'}}>
+            <div className='activity-name'>
+              {name}
             </div>
             <div>
-                <button onClick={() => toggle(name)}>
-                    {archived ? 'un' : ''}archive
-                </button>
-                {!archived ?
-                  <button onClick={() => edit(name)}>
-                    edit
-                  </button>
-                : null}
+              ({minutesToHumanString(idealTime)})
             </div>
-        </div>
+          </div>
+
+          <div className='activity-actions'>
+              <button onClick={() => toggle(name)}>
+                  {archived ? 'un' : ''}archive
+              </button>
+              {!archived ?
+                <button onClick={() => edit(name)}>
+                  edit
+                </button>
+              : null}
+          </div>
+        </label>
       </li>
     );
   }

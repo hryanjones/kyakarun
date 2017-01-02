@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Activity from './Activity';
 
-class Activities extends Component {
+class Activities extends React.Component {
   constructor() {
     super();
     this.state = null; // no state in this component, right?
@@ -17,6 +17,7 @@ class Activities extends Component {
         {this._renderActivities(activities)}
         {Object.keys(archived).length ?
           <div className='archived'>
+            <hr/>
             <h2>Archived activities</h2>
             {this._renderActivities(archived, {archived: true})}
           </div>
@@ -25,14 +26,14 @@ class Activities extends Component {
     );
   }
 
-  _renderActivities(activities, props={}) {
-    const {toggle} = this.props;
+  _renderActivities(activities, activityProps={}) {
+    const {toggle, edit} = this.props;
     return (
       <ul>
         {Object.keys(activities).map(name => {
           const data = activities[name];
-          props = Object.assign(props, {name, data, toggle, key: name});
-          return (<Activity {...props}/>);
+          activityProps = Object.assign(activityProps, {name, data, toggle, edit, key: name});
+          return (<Activity {...activityProps}/>);
         })}
       </ul>
     );

@@ -1,9 +1,9 @@
 import minutesLeftInActivity from './minutesLeftInActivity';
 import minutesToHumanString from './minutesToHumanString';
 import {MS_PER_MINUTE} from './constants';
-import React, {Component} from 'react';
+import React from 'react';
 
-class TimeLeft extends Component {
+class TimeLeft extends React.Component {
   constructor() {
     super();
     this.state = null; // no state in this component, right?

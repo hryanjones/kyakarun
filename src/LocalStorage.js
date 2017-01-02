@@ -1,7 +1,7 @@
 // This is a bad hack to work with react-localstorage - FIXME
 import React from 'react';
 
-const hasLocalStorage = 'localStorage' in global;
+let hasLocalStorage = 'localStorage' in window;
 const testKey = 'react-localstorage.mixin.test-key';
 let ls;
 
@@ -9,7 +9,8 @@ if (hasLocalStorage) {
   try {
     // Access to global `localStorage` property must be guarded as it
     // fails under iOS private session mode.
-    ls = global.localStorage;
+    // ls = global.localStorage; // NOTE global not in browser root
+    ls = window.localStorage;
     ls.setItem(testKey, 'foo');
     ls.removeItem(testKey);
   } catch (e) {
@@ -18,14 +19,16 @@ if (hasLocalStorage) {
 }
 
 // Warn if localStorage cannot be found or accessed.
-if (process.browser) {
-  console.warn(
-    hasLocalStorage,
-    'localStorage not found. Component state will not be stored to localStorage.'
-  );
-}
+// if (process.browser) {
+//   console.warn(
+//     hasLocalStorage,
+//     'localStorage not found. Component state will not be stored to localStorage.'
+//   );
+// }
 
-let Mixin = module.exports = {
+export default LocalStorageMixin;
+
+const LocalStorageMixin = {
   /**
    * Error checking. On update, ensure that the last state stored in localStorage is equal
    * to the state on the component. We skip the check the first time around as state is left
@@ -41,7 +44,8 @@ let Mixin = module.exports = {
     let key = getLocalStorageKey(this);
     if (key === false) return;
     let prevStoredState = ls.getItem(key);
-    if (prevStoredState && process.env.NODE_ENV !== "production") {
+    // if (prevStoredState && process.env.NODE_ENV !== "production") { // NOTE process not in browser root
+    if (prevStoredState) {
       console.warn(
         prevStoredState === JSON.stringify(getSyncState(this, this.state)),
         'While component ' + getDisplayName(this) + ' was saving state to localStorage, ' +

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-class BackButton extends Component {
+class BackButton extends React.Component {
   constructor() {
     super();
     this.state = null; // such stateless, wow

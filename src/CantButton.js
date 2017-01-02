@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 // constraint suggestions
 // "a quiet place"
@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 // "an internet connection"
 // "a real computer"
 
-class CantButton extends Component {
+class CantButton extends React.Component {
 
   constructor() {
     super();

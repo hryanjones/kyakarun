@@ -98,10 +98,9 @@ class App extends React.Component {
     }
 
     return (
-      <div className="App">
-        {header}
+      <div className='App'>
         {mode !== 'what' ? // back button
-          <BackButton onClick={() => this.setState({mode: 'what'})} />
+          <BackButton onClick={() => this.setState({mode: 'what', activityName: null})} />
         : null}
         {body}
         {mode !== 'create' ?
@@ -144,7 +143,7 @@ class App extends React.Component {
     }
 
     this.setState({
-      activities: newActivities
+      activities: newActivities,
       mode: 'what',
       time: null,
       activityName: null,
