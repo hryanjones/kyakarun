@@ -26,7 +26,7 @@ echo "
         <title>KyaKarun</title>
 
         <!-- CSS -->
-        <link rel='stylesheet' href='/static/css/simpleBuildBundle.css'/>
+        <link rel='stylesheet' href='./static/css/simpleBuildBundle.css'/>
     </head>
     <body>
         <div id='root'></div>
@@ -36,9 +36,9 @@ echo "
         <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js'></script>
 
         <!-- JS -->
-        <script src='/static/js/simpleBuildBundle.js' type='text/babel'></script>
+        <script src='./static/js/simpleBuildBundle.js' type='text/babel'></script>
     </body>
 </html>
 " > build/index.html
 
-echo "Okay try starting a local server in the ./build/static/ folder and opening in browser."
+echo "Okay try starting a local server in the top-level folder and opening in browser."
