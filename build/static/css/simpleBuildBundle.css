@@ -131,6 +131,7 @@ input[type='submit'], input[type='text'], select, .choice {
   position: fixed;
   right: 5px;
   bottom: 5px;
+  border: 2px solid white;
 }
 
 label {

@@ -635,9 +635,9 @@ class What extends React.Component {
           <div className='container'>
             <h1>{suggestion}</h1>
             <p className='container'>
-              {activities[suggestion].idealTime === time ?
+              {activities[suggestion].idealTime === time || time === -1 ? // -1 is plenty of time case
                 <span>
-                  it's good to do this for {minutesToHumanString(time)} or so
+                  it's good to do this for {minutesToHumanString(activities[suggestion].idealTime)} or so
                 </span>
               :
                 <span>
@@ -675,11 +675,23 @@ class What extends React.Component {
         :
           <form>
             {!time ? // haven't chosen a task yet
-              times.map(t =>
-                <label className='choice' key={t} onClick={() => this.setState({time: t})}>
-                  {minutesToHumanString(t)}
-                </label>
-              )
+              <div>
+                {times.map(t =>
+                  <label className='choice' key={t} onClick={() => this.setState({time: t})}>
+                    {minutesToHumanString(t)}
+                  </label>
+                )}
+
+                {times.length > 1 ?
+                  <div>
+                    <hr/>
+                    <label className='choice primary' onClick={() => this.setState({time: -1})}>
+                      plenty of time
+                    </label>
+                  </div>
+                : null}
+              </div>
+
             :
               <button className='choice' onClick={this._resetSuggestion}>
                 try again
@@ -726,17 +738,22 @@ class What extends React.Component {
     const {rejected, rejectedConstraints} = this.state;
     const sortedTimes = getSortedTimes(idealTimes);
     const timeIndex = sortedTimes.indexOf(time);
-    validateTimeIndex(timeIndex);
+    let choices = [];
+    let possibilities = [];
 
-    // for exact time matches we give a weight of 2, they're twice as likely to come up as others
-    let possibilities = getPossibilitiesAtWeight(time, 2);
+    if (timeIndex !== -1) { // normal flow selecting a time
+      // for exact time matches we give a weight of 2, they're twice as likely to come up as others
+      possibilities = getPossibilitiesAtWeight(time, 2);
 
-    // add on activity names for other times at a lower weight
-    [sortedTimes[timeIndex - 1], sortedTimes[timeIndex + 1]].forEach(addNearbyPossibilities);
+      // add on activity names for other times at a lower weight
+      [sortedTimes[timeIndex - 1], sortedTimes[timeIndex + 1]].forEach(addNearbyPossibilities);
+    }
+    else {
+      // Plenty of time, select from all activities equally
+      Object.keys(idealTimes).forEach(addNearbyPossibilities);
+    }
 
-    const choices = [];
-
-    // create choice array where the weighting of the choice is the number of times it's in the array
+    // create choices array where the weighting of the choice is the number of times it's in the array
     possibilities.forEach(addPossibilityToChoicesNTimes);
 
     return pickOneChoice(choices);
@@ -745,12 +762,6 @@ class What extends React.Component {
       return Object.keys(times)
         .map(n => parseInt(n, 10)) // object keys are strings, make 'em ints
         .sort((a, b) => a - b); // number sort them
-    }
-
-    function validateTimeIndex(index) {
-      if (index === -1) {
-        throw new Error(`Couldn't find time (${time}) in sortedTimes (${sortedTimes}.`);
-      }
     }
 
     function addNearbyPossibilities(nearbyTime) {
@@ -789,7 +800,12 @@ class What extends React.Component {
         })
         .map(name => ({name, weight}));
     }
+
+    function getAllPossibilitiesEqually() {
+      const possibilities = [];
+    }
   }
+
 }
 
 function _getHeader(times, time, suggestion, rejected) {
@@ -910,7 +926,6 @@ function minutesToHumanString(minutes, shouldShorten) {
     return num + ' ' + pluralize(word, num);
   }
 }
-
 
 function pluralize(word, num) {
   if (num === 1) {
