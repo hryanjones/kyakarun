@@ -144,7 +144,8 @@ const TIME_BREAK_POINTS = [
   120, // 2 hrs
 ];
 
-const MS_PER_MINUTE = 60/*seconds per minute*/ * 1000/*milliseconds per second*/;
+const MS_PER_SECOND = 1000/*milliseconds per second*/;
+const MS_PER_MINUTE = 60/*seconds per minute*/ * MS_PER_SECOND;
 
 
 class Activities extends React.Component {
@@ -243,11 +244,9 @@ class App extends React.Component {
     this.state = {
       activities: {}, // main store of activities -> LocalStorage
 
-      // this is actually an object of objects first key is ideal time minutes, second key is activity name
-
-      // create -> create a new activity (should be able to edit soon too)
+      // create -> create a new activity or edit an existing one
       // what -> what to do now?
-      // list -> list the activities (edit will be accessible from here and also from a suggested task)
+      // list -> list the activities (edit is also accessible from here, maybe also from a suggested task in future)
       mode: 'what',
       archived: {}, // this is where we store things that are done or deleted
 
@@ -262,7 +261,7 @@ class App extends React.Component {
       '_updateActivity',
       '_toggleArchived',
       'addActivityConstraint',
-      '_resetActiveActivity',
+      '_reset',
       '_setActiveActivity',
     ]
     .forEach(fcn => {
@@ -285,19 +284,18 @@ class App extends React.Component {
 
     let body;
 
-    if (minutesLeftInActivity(activityName, activities, activityStartTime) > 0) {
+    const minutesLeft = minutesLeftInActivity(activityName, activities, activityStartTime);
+
+    if (minutesLeft > 0) {
       body = <TimeLeft
         activityName={activityName}
-        activities={activites}
+        activities={activities}
         startTime={activityStartTime}
-        reset={this._resetActiveActivity}
+        reset={this._reset}
       />;
-      if (body) {
-        return [body, <BackButton onClick={this._resetActiveActivity} />];
-      }
     }
 
-    if (mode === 'what') {
+    if (!body && mode === 'what') {
       body = <What
         activities={activities}
         addActivityConstraint={this.addActivityConstraint}
@@ -326,7 +324,7 @@ class App extends React.Component {
     return (
       <div className='App'>
         <div className='header'>
-          {mode === 'what' ?
+          {mode === 'what' && minutesLeft <= 0 ?
             <button
               className='activities-list'
               onClick={() => this.setState({mode: 'list'})}
@@ -334,10 +332,7 @@ class App extends React.Component {
               ☰
             </button>
           :
-            <button // back button
-              className='cancel'
-              onClick={() => this.setState({mode: 'what', activityName: null})}
-              >
+            <button className='cancel' onClick={this._reset}>
               ↩
             </button>
           }
@@ -347,10 +342,10 @@ class App extends React.Component {
         <div className='body'>
           {body}
         </div>
-        {mode !== 'create' ?
+        {mode !== 'create' && minutesLeft <= 0 ?
           <button
             className='create-todo single-button primary'
-            onClick={() => this.setState({mode: 'create'})}
+            onClick={() => this.setState({mode: 'create', activityName: null})}
             >
             +
           </button>
@@ -417,8 +412,8 @@ class App extends React.Component {
     this.setState({activities: newActivities, archived: newArchived});
   }
 
-  _resetActiveActivity() {
-    this.setState({activityName: null, activityStartTime: null});
+  _reset() {
+    this.setState({mode: 'what', activityName: null, activityStartTime: null});
   }
 
   _setActiveActivity(activityName) {
@@ -850,17 +845,21 @@ class TimeLeft extends React.Component {
   constructor() {
     super();
     this.state = null; // no state in this component, right?
+    this._check = this._check.bind(this);
+    this._clearTimer = this._clearTimer.bind(this);
     this._done = this._done.bind(this);
   }
 
   componentDidMount() {
-    if (this._timer) {
-      this._timer.cancel(); // FIXME
-    }
+    this._clearTimer();
     this._timer = setInterval(
-      this._done,
-      1 * MS_PER_MINUTE
+      this._check,
+      10 * MS_PER_SECOND
     );
+  }
+
+  _check() {
+    this.forceUpdate();
   }
 
   render() {
@@ -870,19 +869,27 @@ class TimeLeft extends React.Component {
     const minutesLeft = minutesLeftInActivity(activityName, activities, startTime)
 
     if (minutesLeft <= 0) {
+      this._done();
       return null;
     }
 
     return (
       <div>
         <h1>{activityName}</h1>
-        <h3>{minutesToHumanString(minutesLeft)} left</h3>
+        <p>{minutesToHumanString(minutesLeft)} left</p>
       </div>
     );
   }
 
+  _clearTimer() {
+    if (this._timer) {
+      clearInterval(this._timer);
+      this._timer = null;
+    }
+  }
+
   _done() {
-    this._time.cancel(); // FIXME
+    this._clearTimer();
     const {reset} = this.props;
     reset && reset();
   }
@@ -898,8 +905,8 @@ function minutesLeftInActivity(activityName, activities, startTime) {
     }
     const now = new Date();
     startTime = typeof startTime === 'object' ? startTime : new Date(startTime); // FIXME should be a better way to tell if startTime is a date object or not
-    const endTime = new Date(startTime + (minutes * MS_PER_MINUTE));
-    return (endTime - startTime) / MS_PER_MINUTE;
+    const endTime = new Date(Number(startTime) + (minutes * MS_PER_MINUTE));
+    return Math.ceil((endTime - now) / MS_PER_MINUTE);
 }
 
 function minutesToHumanString(minutes, shouldShorten) {

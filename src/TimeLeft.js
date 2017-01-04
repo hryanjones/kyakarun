@@ -1,22 +1,22 @@
 import minutesLeftInActivity from './minutesLeftInActivity';
 import minutesToHumanString from './minutesToHumanString';
-import {MS_PER_MINUTE} from './constants';
+import {MS_PER_MINUTE, MS_PER_SECOND} from './constants';
 import React from 'react';
 
 class TimeLeft extends React.Component {
   constructor() {
     super();
     this.state = null; // no state in this component, right?
+    this._check = this._check.bind(this);
+    this._clearTimer = this._clearTimer.bind(this);
     this._done = this._done.bind(this);
   }
 
   componentDidMount() {
-    if (this._timer) {
-      this._timer.cancel(); // FIXME
-    }
+    this._clearTimer();
     this._timer = setInterval(
-      this._done,
-      1 * MS_PER_MINUTE
+      this._check,
+      10 * MS_PER_SECOND
     );
   }
 
@@ -27,21 +27,32 @@ class TimeLeft extends React.Component {
     const minutesLeft = minutesLeftInActivity(activityName, activities, startTime)
 
     if (minutesLeft <= 0) {
+      this._done();
       return null;
     }
 
     return (
       <div>
         <h1>{activityName}</h1>
-        <h3>{minutesToHumanString(minutesLeft)} left</h3>
+        <p>{minutesToHumanString(minutesLeft)} left</p>
       </div>
     );
   }
 
+  _check() {
+    this.forceUpdate();
+  }
+
+  _clearTimer() {
+    if (this._timer) {
+      clearInterval(this._timer);
+      this._timer = null;
+    }
+  }
+
   _done() {
-    this._time.cancel(); // FIXME
-    const {reset} = this.props;
-    reset && reset();
+    this._clearTimer();
+    this.props.reset();
   }
 }
 

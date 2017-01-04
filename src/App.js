@@ -17,11 +17,9 @@ class App extends React.Component {
     this.state = {
       activities: {}, // main store of activities -> LocalStorage
 
-      // this is actually an object of objects first key is ideal time minutes, second key is activity name
-
-      // create -> create a new activity (should be able to edit soon too)
+      // create -> create a new activity or edit an existing one
       // what -> what to do now?
-      // list -> list the activities (edit will be accessible from here and also from a suggested task)
+      // list -> list the activities (edit is also accessible from here, maybe also from a suggested task in future)
       mode: 'what',
       archived: {}, // this is where we store things that are done or deleted
 
@@ -36,7 +34,7 @@ class App extends React.Component {
       '_updateActivity',
       '_toggleArchived',
       'addActivityConstraint',
-      '_resetActiveActivity',
+      '_reset',
       '_setActiveActivity',
     ]
     .forEach(fcn => {
@@ -59,19 +57,17 @@ class App extends React.Component {
 
     let body;
 
-    if (minutesLeftInActivity(activityName, activities, activityStartTime) > 0) {
+    const minutesLeft = minutesLeftInActivity(activityName, activities, activityStartTime);
+
+    if (minutesLeft > 0) {
       body = <TimeLeft
         activityName={activityName}
-        activities={activites}
+        activities={activities}
         startTime={activityStartTime}
-        reset={this._resetActiveActivity}
+        reset={this._reset}
       />;
-      if (body) {
-        return [body, <BackButton onClick={this._resetActiveActivity} />];
-      }
     }
-
-    if (mode === 'what') {
+    else if (mode === 'what') {
       body = <What
         activities={activities}
         addActivityConstraint={this.addActivityConstraint}
@@ -100,7 +96,7 @@ class App extends React.Component {
     return (
       <div className='App'>
         <div className='header'>
-          {mode === 'what' ?
+          {mode === 'what' && minutesLeft <= 0 ?
             <button
               className='activities-list'
               onClick={() => this.setState({mode: 'list'})}
@@ -108,10 +104,7 @@ class App extends React.Component {
               ☰
             </button>
           :
-            <button // back button
-              className='cancel'
-              onClick={() => this.setState({mode: 'what', activityName: null})}
-              >
+            <button className='cancel' onClick={this._reset}>
               ↩
             </button>
           }
@@ -121,10 +114,10 @@ class App extends React.Component {
         <div className='body'>
           {body}
         </div>
-        {mode !== 'create' ?
+        {mode !== 'create' && minutesLeft <= 0 ?
           <button
             className='create-todo single-button primary'
-            onClick={() => this.setState({mode: 'create'})}
+            onClick={() => this.setState({mode: 'create', activityName: null})}
             >
             +
           </button>
@@ -191,8 +184,8 @@ class App extends React.Component {
     this.setState({activities: newActivities, archived: newArchived});
   }
 
-  _resetActiveActivity() {
-    this.setState({activityName: null, activityStartTime: null});
+  _reset() {
+    this.setState({mode: 'what', activityName: null, activityStartTime: null});
   }
 
   _setActiveActivity(activityName) {
