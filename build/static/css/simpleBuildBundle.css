@@ -3,16 +3,17 @@ body {
   margin: 0px;
   background-color: #FFFAEE; /* light cream color */
   color: #350072;
+  box-sizing: border-box;
 }
 
 .body {
-  margin-top: 45px; /* leave room for the header */
+  margin-top: 45px; /* HEADER_HEIGHT */ /* leave room for the header */
   margin-bottom: 45px; /* leave room so we can scroll content above the + button */
-  padding: 10px;
+  padding: 10px /* BODY_PADDING */;
 }
 
 .header {
-  height: 45px;
+  height: 45px; /* HEADER_HEIGHT */
   background-color: #350072;
   color: white;
   width: 100%;
@@ -24,6 +25,26 @@ body {
   align-items: center;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+  border-bottom: 1px solid white;
+}
+
+.menu {
+  position: absolute;
+  top: 45px; /* HEADER_HEIGHT */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #350072;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+.menu li {
+  font-size: 1.6em;
+  padding: 20px 10px;
+  border-bottom: 1px solid white;
+  cursor: pointer;
 }
 
 .activities .flex-space-between {
@@ -131,7 +152,7 @@ input[type='submit'], input[type='text'], select, .choice {
   position: fixed;
   right: 5px;
   bottom: 5px;
-  border: 2px solid white;
+  box-shadow: 0px 0px 20px #fff;
 }
 
 label {
