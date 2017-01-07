@@ -9,6 +9,8 @@ cat src/CantButton.js >> /tmp/pre-bundle.js
 cat src/EditActivity.js >> /tmp/pre-bundle.js
 cat src/idealTimesToTimes.js >> /tmp/pre-bundle.js
 cat src/What.js >> /tmp/pre-bundle.js
+cat src/About.js >> /tmp/pre-bundle.js
+cat src/Settings.js >> /tmp/pre-bundle.js
 cat src/TimeLeft.js >> /tmp/pre-bundle.js
 cat src/minutesLeftInActivity.js >> /tmp/pre-bundle.js
 cat src/minutesToHumanString.js >> /tmp/pre-bundle.js
