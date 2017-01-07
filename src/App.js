@@ -27,6 +27,7 @@ class App extends React.Component {
 
       activityName: null, // if an activity is chosen or is being edited it'll be saved here until replaced or reset
       activityStartTime: null, // ISO8601 string timestamp of activity start for displaying time left (and resetting when that gets to 0)
+      settings: {}, // key value store of settings, all should default to false
     };
 
     this.componentDidMount = LocalStorageMixin.componentDidMount.bind(this);
@@ -39,6 +40,7 @@ class App extends React.Component {
       '_reset',
       '_setActiveActivity',
       '_toggleMenu',
+      '_updateSettings',
     ]
     .forEach(fcn => {
       this[fcn] = this[fcn].bind(this);
@@ -46,7 +48,7 @@ class App extends React.Component {
   }
 
   getStateFilterKeys() {
-    return ['activities', 'archived', 'activityName', 'activityStartTime'];
+    return ['activities', 'archived', 'activityName', 'activityStartTime', 'settings'];
   }
 
   componentDidUpdate() {
@@ -56,7 +58,7 @@ class App extends React.Component {
   }
 
   render() {
-    const {activityName, activityStartTime, activities, archived, mode} = this.state;
+    const {activityName, activityStartTime, activities, archived, mode, settings} = this.state;
 
     let body;
 
@@ -66,7 +68,7 @@ class App extends React.Component {
       body = <About/>;
     }
     else if (mode === 'settings') {
-      body = <Settings/>;
+      body = <Settings settings={settings} updateSettings={this._updateSettings}/>;
     }
     else if (mode === 'menu') {
       body = <ul className='menu'>
@@ -94,6 +96,7 @@ class App extends React.Component {
         activities={activities}
         addActivityConstraint={this.addActivityConstraint}
         acceptSuggestion={this._setActiveActivity}
+        settings={settings} // so can pass mixUpwards, mixDownwards
       />;
     }
     else if (mode === 'create') {
@@ -219,6 +222,13 @@ class App extends React.Component {
   _setActiveActivity(activityName) {
     const activityStartTime = getNowISOString();
     this.setState({activityName, activityStartTime});
+  }
+
+  _updateSettings(newSettings) {
+    const {settings} = this.state;
+    this.setState({
+      settings: Object.assign({}, settings, newSettings)
+    });
   }
 }
 

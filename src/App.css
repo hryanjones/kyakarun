@@ -47,6 +47,10 @@ body {
   cursor: pointer;
 }
 
+.settings label {
+  font-weight: bold;
+}
+
 .activities .flex-space-between {
   display: inline-flex;
   width: 100%;

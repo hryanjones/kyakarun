@@ -252,6 +252,7 @@ class App extends React.Component {
 
       activityName: null, // if an activity is chosen or is being edited it'll be saved here until replaced or reset
       activityStartTime: null, // ISO8601 string timestamp of activity start for displaying time left (and resetting when that gets to 0)
+      settings: {}, // key value store of settings, all should default to false
     };
 
     this.componentDidMount = LocalStorageMixin.componentDidMount.bind(this);
@@ -264,6 +265,7 @@ class App extends React.Component {
       '_reset',
       '_setActiveActivity',
       '_toggleMenu',
+      '_updateSettings',
     ]
     .forEach(fcn => {
       this[fcn] = this[fcn].bind(this);
@@ -271,7 +273,7 @@ class App extends React.Component {
   }
 
   getStateFilterKeys() {
-    return ['activities', 'archived', 'activityName', 'activityStartTime'];
+    return ['activities', 'archived', 'activityName', 'activityStartTime', 'settings'];
   }
 
   componentDidUpdate() {
@@ -281,7 +283,7 @@ class App extends React.Component {
   }
 
   render() {
-    const {activityName, activityStartTime, activities, archived, mode} = this.state;
+    const {activityName, activityStartTime, activities, archived, mode, settings} = this.state;
 
     let body;
 
@@ -291,7 +293,7 @@ class App extends React.Component {
       body = <About/>;
     }
     else if (mode === 'settings') {
-      body = <Settings/>;
+      body = <Settings settings={settings} updateSettings={this._updateSettings}/>;
     }
     else if (mode === 'menu') {
       body = <ul className='menu'>
@@ -319,6 +321,7 @@ class App extends React.Component {
         activities={activities}
         addActivityConstraint={this.addActivityConstraint}
         acceptSuggestion={this._setActiveActivity}
+        settings={settings} // so can pass mixUpwards, mixDownwards
       />;
     }
     else if (mode === 'create') {
@@ -444,6 +447,13 @@ class App extends React.Component {
   _setActiveActivity(activityName) {
     const activityStartTime = getNowISOString();
     this.setState({activityName, activityStartTime});
+  }
+
+  _updateSettings(newSettings) {
+    const {settings} = this.state;
+    this.setState({
+      settings: Object.assign({}, settings, newSettings)
+    });
   }
 }
 
@@ -754,7 +764,8 @@ class What extends React.Component {
   }
 
   _getWeightedSuggestion(time, idealTimes) {
-    const {activities} = this.props;
+    const {activities, settings} = this.props;
+    const {mixUpwards, mixDownwards} = settings;
     const {rejected, rejectedConstraints} = this.state;
     const sortedTimes = getSortedTimes(idealTimes);
     const timeIndex = sortedTimes.indexOf(time);
@@ -765,8 +776,13 @@ class What extends React.Component {
       // for exact time matches we give a weight of 2, they're twice as likely to come up as others
       possibilities = getPossibilitiesAtWeight(time, 2);
 
-      // add on activity names for other times at a lower weight
-      [sortedTimes[timeIndex - 1], sortedTimes[timeIndex + 1]].forEach(addNearbyPossibilities);
+      // add on activity names for other times at a lower weight if settings allow
+      if (mixUpwards) {
+        addNearbyPossibilities(sortedTimes[timeIndex - 1]);
+      }
+      if (mixDownwards) {
+        addNearbyPossibilities(sortedTimes[timeIndex + 1]);
+      }
     }
     else {
       // Plenty of time, select from all activities equally
@@ -838,7 +854,10 @@ function _getHeader(times, time, suggestion, rejected) {
     return <h1>How long do you have?</h1>;
   }
   if (!suggestion) {
-    return <h1>I'm all out of options :(</h1>;
+    return <h1>
+      I'm all out of options
+      <strong style={{whiteSpace: 'nowrap'}}> :(</strong>
+    </h1>;
   }
 
   const numRejected = Object.keys(rejected).length;
@@ -910,11 +929,33 @@ class Settings extends React.Component {
   }
 
   render() {
-    // const {settings, updateSettings} = this.props;
+    const {settings, updateSettings} = this.props;
+    const {mixUpwards, mixDownwards} = settings;
 
     return (
-      <div>
-        Here's where settings go.
+
+      <div className='settings'>
+        <h1>Settings</h1>
+        <h3>Mixing</h3>
+        <p>
+          Mixing allows activities to mix upwards or downwards into the next time slot at a lower probability. (e.g. if "mix upwards" is set, a 5 minute activity may show up when you select 15 minutes)
+          <label onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+              updateSettings({mixUpwards: !mixUpwards})
+            }}>
+            <input type='checkbox' checked={mixUpwards} readonly />
+            mix upwards
+          </label>
+          <label onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+              updateSettings({mixDownwards: !mixDownwards})
+            }}>
+            <input type='checkbox' checked={mixDownwards} readonly />
+            mix downwards
+          </label>
+        </p>
       </div>
     );
   }

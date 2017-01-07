@@ -140,7 +140,8 @@ class What extends React.Component {
   }
 
   _getWeightedSuggestion(time, idealTimes) {
-    const {activities} = this.props;
+    const {activities, settings} = this.props;
+    const {mixUpwards, mixDownwards} = settings;
     const {rejected, rejectedConstraints} = this.state;
     const sortedTimes = getSortedTimes(idealTimes);
     const timeIndex = sortedTimes.indexOf(time);
@@ -151,8 +152,13 @@ class What extends React.Component {
       // for exact time matches we give a weight of 2, they're twice as likely to come up as others
       possibilities = getPossibilitiesAtWeight(time, 2);
 
-      // add on activity names for other times at a lower weight
-      [sortedTimes[timeIndex - 1], sortedTimes[timeIndex + 1]].forEach(addNearbyPossibilities);
+      // add on activity names for other times at a lower weight if settings allow
+      if (mixUpwards) {
+        addNearbyPossibilities(sortedTimes[timeIndex - 1]);
+      }
+      if (mixDownwards) {
+        addNearbyPossibilities(sortedTimes[timeIndex + 1]);
+      }
     }
     else {
       // Plenty of time, select from all activities equally
@@ -224,7 +230,10 @@ function _getHeader(times, time, suggestion, rejected) {
     return <h1>How long do you have?</h1>;
   }
   if (!suggestion) {
-    return <h1>I'm all out of options :(</h1>;
+    return <h1>
+      I'm all out of options
+      <strong style={{whiteSpace: 'nowrap'}}> :(</strong>
+    </h1>;
   }
 
   const numRejected = Object.keys(rejected).length;
