@@ -123,11 +123,9 @@ class App extends React.Component {
         <div className='header'>
           {mode === 'what' && minutesLeft <= 0 ?
             <button
-              className='activities-list'
+              className='activities-list box-shadow-menu'
               onClick={this._toggleMenu}
-              >
-              ☰
-            </button>
+            />
           :
             <button className='cancel' onClick={this._reset}>
               ↩

@@ -29,6 +29,25 @@ body {
   border-bottom: 1px solid white;
 }
 
+/* stolen from https://css-tricks.com/three-line-menu-navicon/#article-header-id-2 */
+.box-shadow-menu {
+  position: relative;
+  padding-left: 1.25em;
+  height: 1.1em; /* I added */
+}
+.box-shadow-menu:before {
+  content: "";
+  position: absolute;
+  left: 0.25em;
+  top: 0.25em;
+  width: 1em;
+  height: 0.15em;
+  background: white;
+  box-shadow:
+    0 0.25em 0 0 white,
+    0 0.5em 0 0 white;
+}
+
 .menu {
   position: absolute;
   top: 45px; /* HEADER_HEIGHT */
