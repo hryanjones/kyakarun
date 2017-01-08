@@ -1,5 +1,5 @@
 // This is a bad hack to work with react-localstorage - FIXME
-import React from 'react';
+import React from 'react'; // eslint-disable no-unused-vars
 
 let hasLocalStorage = 'localStorage' in window;
 const testKey = 'react-localstorage.mixin.test-key';
@@ -25,8 +25,6 @@ if (hasLocalStorage) {
 //     'localStorage not found. Component state will not be stored to localStorage.'
 //   );
 // }
-
-export default LocalStorageMixin;
 
 const LocalStorageMixin = {
   /**
@@ -137,3 +135,6 @@ function getSyncState(component, state) {
   });
   return result;
 }
+
+export default LocalStorageMixin;
+

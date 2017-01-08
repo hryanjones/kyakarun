@@ -10,4 +10,4 @@ const TIME_BREAK_POINTS = [
 const MS_PER_SECOND = 1000/*milliseconds per second*/;
 const MS_PER_MINUTE = 60/*seconds per minute*/ * MS_PER_SECOND;
 
-export default {MS_PER_MINUTE, MS_PER_SECOND, TIME_BREAK_POINTS};
+export {MS_PER_MINUTE, MS_PER_SECOND, TIME_BREAK_POINTS};

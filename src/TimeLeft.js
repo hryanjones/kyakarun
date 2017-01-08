@@ -1,6 +1,6 @@
 import minutesLeftInActivity from './minutesLeftInActivity';
 import minutesToHumanString from './minutesToHumanString';
-import {MS_PER_MINUTE, MS_PER_SECOND} from './constants';
+import {MS_PER_SECOND} from './constants';
 import React from 'react';
 
 class TimeLeft extends React.Component {
@@ -22,7 +22,6 @@ class TimeLeft extends React.Component {
 
   render() {
     const {activityName, activities, startTime} = this.props;
-    const activity = activities[activityName];
 
     const minutesLeft = minutesLeftInActivity(activityName, activities, startTime)
 

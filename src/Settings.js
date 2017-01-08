@@ -1,4 +1,3 @@
-import minutesToHumanString from './minutesToHumanString';
 import React from 'react';
 
 class Settings extends React.Component {
@@ -23,7 +22,7 @@ class Settings extends React.Component {
               e.preventDefault();
               updateSettings({mixUpwards: !mixUpwards})
             }}>
-            <input type='checkbox' checked={mixUpwards} readonly />
+            <input type='checkbox' checked={mixUpwards} readOnly />
             mix upwards
           </label>
           <label onClick={e => {
@@ -31,7 +30,7 @@ class Settings extends React.Component {
               e.preventDefault();
               updateSettings({mixDownwards: !mixDownwards})
             }}>
-            <input type='checkbox' checked={mixDownwards} readonly />
+            <input type='checkbox' checked={mixDownwards} readOnly />
             mix downwards
           </label>
         </p>

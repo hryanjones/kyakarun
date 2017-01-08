@@ -1,4 +1,4 @@
-import CantButton from './CantButton';
+// import CantButton from './CantButton';
 import minutesToHumanString from './minutesToHumanString';
 import idealTimesToTimes from './idealTimesToTimes';
 import React from 'react';
@@ -211,10 +211,6 @@ class What extends React.Component {
           return !Object.keys(rejectedConstraints).some(c => c in constraints); // reject if it has a bad constraint
         })
         .map(name => ({name, weight}));
-    }
-
-    function getAllPossibilitiesEqually() {
-      const possibilities = [];
     }
   }
 

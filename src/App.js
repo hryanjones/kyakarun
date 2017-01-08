@@ -1,6 +1,6 @@
 // Libs
 import React from 'react';
-import LocalStorageMixin from 'react-localstorage';
+import LocalStorageMixin from './LocalStorage';
 
 // components
 import './App.css';
@@ -9,6 +9,7 @@ import EditActivity from './EditActivity';
 import What from './What';
 import About from './About';
 import Settings from './Settings';
+import TimeLeft from './TimeLeft';
 
 // helpers
 import minutesLeftInActivity from './minutesLeftInActivity';
