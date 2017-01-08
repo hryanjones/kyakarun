@@ -18,6 +18,7 @@ cat src/index.js >> /tmp/pre-bundle.js
 
 grep -Ev "^(im|ex)port " /tmp/pre-bundle.js > build/static/js/simpleBuildBundle.js
 cp -f src/App.css build/static/css/simpleBuildBundle.css
+cp -f public/favicon.png build/favicon.png
 
 echo "
 <html>
@@ -25,6 +26,9 @@ echo "
         <meta charset='utf-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <title>KyaKarun</title>
+
+        <!-- Favicon -->
+        <link rel='shortcut icon' href='./favicon.png'/>
 
         <!-- CSS -->
         <link rel='stylesheet' href='./static/css/simpleBuildBundle.css'/>
