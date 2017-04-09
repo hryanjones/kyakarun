@@ -8,7 +8,7 @@ class Settings extends React.Component {
 
   render() {
     const {settings, updateSettings} = this.props;
-    const {mixUpwards, mixDownwards} = settings;
+    const {mixUpwards} = settings;
 
     return (
 
@@ -16,7 +16,7 @@ class Settings extends React.Component {
         <h1>Settings</h1>
         <h3>Mixing</h3>
         <p>
-          Mixing allows activities to mix upwards or downwards into the next time slot at a lower probability. (e.g. if "mix upwards" is set, a 5 minute activity may show up when you select 15 minutes)
+          Mixing allows activities to mix upwards into other time slots at a lower probability. (e.g. if "mix upwards" is set, a 5 minute activity may show up when you select 15 minutes or when you select 30 minutes)
           <label onClick={e => {
               e.stopPropagation();
               e.preventDefault();
@@ -24,14 +24,6 @@ class Settings extends React.Component {
             }}>
             <input type='checkbox' checked={mixUpwards} readOnly />
             mix upwards
-          </label>
-          <label onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              updateSettings({mixDownwards: !mixDownwards})
-            }}>
-            <input type='checkbox' checked={mixDownwards} readOnly />
-            mix downwards
           </label>
         </p>
       </div>

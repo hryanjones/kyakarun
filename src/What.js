@@ -141,7 +141,6 @@ class What extends React.Component {
 
   _getWeightedSuggestion(time, idealTimes) {
     const {activities, settings} = this.props;
-    const {mixUpwards, mixDownwards} = settings;
     const {rejected, rejectedConstraints} = this.state;
     const sortedTimes = getSortedTimes(idealTimes);
     const timeIndex = sortedTimes.indexOf(time);
@@ -153,11 +152,8 @@ class What extends React.Component {
       possibilities = getPossibilitiesAtWeight(time, 2);
 
       // add on activity names for other times at a lower weight if settings allow
-      if (mixUpwards) {
-        addNearbyPossibilities(sortedTimes[timeIndex - 1]);
-      }
-      if (mixDownwards) {
-        addNearbyPossibilities(sortedTimes[timeIndex + 1]);
+      if (settings.mixUpwards) {
+        addLowerTimePossibilities(timeIndex - 1, -1);
       }
     }
     else {
@@ -182,6 +178,17 @@ class What extends React.Component {
         getPossibilitiesAtWeight(nearbyTime, 1)
       );
     }
+
+    function addLowerTimePossibilities(timeIndex, indexStep) {
+      while (sortedTimes[timeIndex]) {
+        possibilities = possibilities.concat(
+
+          getPossibilitiesAtWeight(sortedTimes[timeIndex], 1)
+        );
+        timeIndex += indexStep;
+      }
+    }
+
 
     function addPossibilityToChoicesNTimes(possibility) {
       let n = possibility.weight;
