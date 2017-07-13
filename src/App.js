@@ -42,6 +42,7 @@ class App extends React.Component {
       '_setActiveActivity',
       '_toggleMenu',
       '_updateSettings',
+      '_importData',
     ]
     .forEach(fcn => {
       this[fcn] = this[fcn].bind(this);
@@ -69,7 +70,14 @@ class App extends React.Component {
       body = <About/>;
     }
     else if (mode === 'settings') {
-      body = <Settings settings={settings} updateSettings={this._updateSettings}/>;
+      body = (
+        <Settings
+          settings={settings}
+          updateSettings={this._updateSettings}
+          exportableData={{activities, archived}}
+          importData={this._importData}
+        />
+      );
     }
     else if (mode === 'menu') {
       body = <ul className='menu'>
@@ -228,6 +236,18 @@ class App extends React.Component {
     this.setState({
       settings: Object.assign({}, settings, newSettings)
     });
+  }
+
+  _importData(dataToImport) {
+    const {activities, archived} = dataToImport;
+    const update = {mode: 'what'}; // close the settings section and go back to start page
+    if (activities) {
+      update.activities = activities;
+    }
+    if (archived) {
+      update.archived = archived;
+    }
+    this.setState(update);
   }
 }
 
