@@ -2,6 +2,7 @@
 import minutesToHumanString from './minutesToHumanString';
 import idealTimesToTimes from './idealTimesToTimes';
 import React from 'react';
+import marked from 'marked';
 
 class What extends React.Component {
   constructor() {
@@ -34,18 +35,19 @@ class What extends React.Component {
       suggestion = this._getWeightedSuggestion(time, idealTimes);
     }
 
-    return (
-      <div>
-        {_getHeader(times, time, suggestion, rejected)}
-        {suggestion ?
+    if (suggestion) {
+      // TODO move this into it's own component
+      return (
+        <div>
+          {_getHeader(times, time, suggestion, rejected)}
           <div className='container'>
-            <h1>{suggestion}</h1>
+            <h1 dangerouslySetInnerHTML={{__html: marked(suggestion)}} />
             <p className='container'>
               {activities[suggestion].idealTime === time || time === -1 ? // -1 is plenty of time case
                 <span>
                   it's good to do this for {minutesToHumanString(activities[suggestion].idealTime)} or so
                 </span>
-              :
+                :
                 <span>
                   might be good to do this for {minutesToHumanString(time) + ' '}
                   (it's set to {minutesToHumanString(activities[suggestion].idealTime)})
@@ -54,7 +56,7 @@ class What extends React.Component {
             </p>
             <div className='choices'>
               <button className='choice' onClick={() =>
-                  this._rejectSuggestion(suggestion)
+                this._rejectSuggestion(suggestion)
               }>
                 not now
                 {/* naw */}
@@ -72,14 +74,20 @@ class What extends React.Component {
                   acceptSuggestion(suggestion);
                   this._resetSuggestion();
                 }}
-                // TODO improve so this logs adds some info to a log
-                >
+              // TODO improve so this logs adds some info to a log
+              >
                 okay
               </button>
             </div>
           </div>
-        :
-          <form>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {_getHeader(times, time, suggestion, rejected)}
+        <form>
             {!time ? // haven't chosen a task yet
               <div>
                 {times.map(t =>
@@ -104,7 +112,6 @@ class What extends React.Component {
               </button>
             }
           </form>
-        }
       </div>
     );
   }
