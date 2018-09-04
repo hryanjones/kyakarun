@@ -1,5 +1,6 @@
 import minutesToHumanString from './minutesToHumanString';
 import React from 'react';
+import marked from 'marked';
 
 class Activity extends React.Component {
   constructor() {
@@ -15,9 +16,10 @@ class Activity extends React.Component {
           <input type='checkbox' style={{display: 'none'}}/>{/* for showing/hiding actions */}
 
           <div className='activity-data flex-space-between' style={{alignItems: 'baseline'}}>
-            <div className='activity-name'>
-              {name}
-            </div>
+            <div 
+              className='activity-name'
+              dangerouslySetInnerHTML={{__html: marked(name)}}
+            />
             <div>
               ({minutesToHumanString(idealTime, 'shorten please')})
             </div>

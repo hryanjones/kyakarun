@@ -87,6 +87,10 @@ body {
   padding-right: 5px;
 }
 
+.activity-name p {
+  display: inline;
+}
+
 .activity input:checked + div .activity-name:before {
   content: '⌄';
 }
