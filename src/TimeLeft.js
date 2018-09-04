@@ -1,5 +1,6 @@
 import minutesLeftInActivity from './minutesLeftInActivity';
 import minutesToHumanString from './minutesToHumanString';
+import marked from 'marked';
 import {MS_PER_SECOND} from './constants';
 import React from 'react';
 
@@ -32,7 +33,7 @@ class TimeLeft extends React.Component {
 
     return (
       <div>
-        <h1>{activityName}</h1>
+        <h1 dangerouslySetInnerHTML={{__html: marked(activityName)}} />
         <p>{minutesToHumanString(minutesLeft)} left</p>
       </div>
     );
