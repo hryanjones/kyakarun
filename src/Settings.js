@@ -8,10 +8,11 @@ class Settings extends React.Component {
     };
     this._importData = this._importData.bind(this);
     this._validateAndGetNewData = this._validateAndGetNewData.bind(this);
+    this._onToggleMixUpwards = this._onToggleMixUpwards.bind(this);
   }
 
   render() {
-    const {settings, updateSettings, exportableData} = this.props;
+    const {settings, exportableData} = this.props;
     const {importValidationError} = this.state;
     const {mixUpwards} = settings;
 
@@ -22,12 +23,8 @@ class Settings extends React.Component {
         <h3>Mixing</h3>
         <p>
           Mixing allows activities to mix upwards into other time slots at a lower probability. (e.g. if "mix upwards" is set, a 5 minute activity may show up when you select 15 minutes or when you select 30 minutes)
-          <label onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              updateSettings({mixUpwards: !mixUpwards})
-            }}>
-            <input type='checkbox' checked={mixUpwards} readOnly />
+          <label>
+            <input type='checkbox' checked={mixUpwards} readOnly onChange={this._onToggleMixUpwards} />
             mix upwards
           </label>
         </p>
@@ -49,6 +46,10 @@ class Settings extends React.Component {
         : null}
       </div>
     );
+  }
+
+  _onToggleMixUpwards(e) {
+    this.props.updateSettings({mixUpwards: Boolean(e.target.checked)});
   }
 
   _importData() {

@@ -116,7 +116,7 @@ body {
 }
 
 /*BUTTONS AND FORMS*/
-button, input, select, .choice {
+button, input, select, textarea, .choice {
   font-size: 1.2em;
   border-radius: 2px;
   margin: 10px;
@@ -137,11 +137,15 @@ button.choice {
   margin-top: 50px; /* spread these out so it's easier to not miss */
 }
 
-input[type='submit'], input[type='text'], select, .choice {
+input[type='submit'], input[type='text'], select, textarea, .choice {
   box-sizing: border-box;
   padding: 5px;
   width: 95%;
   display: block;
+}
+
+textarea {
+  font-family: sans-serif;
 }
 
 .reason {
@@ -187,7 +191,12 @@ label {
   padding: 10px 3px;
   font-weight: 500;
 }
-button, label {
+
+input[type="submit"],
+select,
+option,
+button,
+label {
   cursor: pointer;
 }
 

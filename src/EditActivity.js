@@ -8,6 +8,8 @@ class EditActivity extends React.Component {
     this.state = {
       error: '',
     };
+
+    this._updateActivity = this._updateActivity.bind(this);
   }
 
   componentDidMount() {
@@ -29,19 +31,16 @@ class EditActivity extends React.Component {
     }
 
     return  (
-      <form onSubmit={this._updateActivity.bind(this)}>
+      <form onSubmit={this._updateActivity}>
         <h2>{activityToEdit ? 'Edit' : 'New'} activity</h2>
         <div>
-          <label>
-            Name:
-            <input ref='activityName' placeholder='name your activity' type='text' defaultValue={activityToEdit}/>
-          </label>
+          <textarea ref='activityName' placeholder='describe your activity' type='text' defaultValue={activityToEdit}/>
           <label>
             Ideal time for activity:
             <select {...selectProps} ref='activityIdealTime'>
-              {!activityToEdit ? // only need this select option, if we're not editing an existing activity
+              {!activityToEdit && // only need this select option, if we're not editing an existing activity
                 <option>-- select a duration --</option>
-              : null}
+              }
               {TIME_BREAK_POINTS.map(minutes =>
                 <option key={minutes} value={minutes}>{minutesToHumanString(minutes)}</option>
               )}
