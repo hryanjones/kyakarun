@@ -1,7 +1,7 @@
 import React from 'react';
 import Activity from './Activity';
 
-class Activities extends React.Component {
+class Activities extends React.PureComponent {
   constructor() {
     super();
     this.state = null; // no state in this component, right?
@@ -30,14 +30,31 @@ class Activities extends React.Component {
     const {toggle, edit} = this.props;
     return (
       <ul>
-        {Object.keys(activities).map(name => {
-          const data = activities[name];
-          activityProps = Object.assign(activityProps, {name, data, toggle, edit, key: name});
-          return (<Activity {...activityProps}/>);
-        })}
+        {getActivityNamesSortedByIdealTime(activities).map(name => 
+          <Activity
+            {...activityProps}
+            data={activities[name]}
+            name={name}
+            toggle={toggle}
+            edit={edit}
+            key={name}
+          />
+        )}
       </ul>
     );
   }
+}
+
+function getActivityNamesSortedByIdealTime(activities) {
+  const names = Object.keys(activities);
+  return names.sort((name1, name2) => {
+    const idealTime1 = activities[name1].idealTime;
+    const idealTime2 = activities[name2].idealTime;
+    if (idealTime1 < idealTime2) {
+      return -1;
+    }
+    return idealTime1 > idealTime2;
+  })
 }
 
 Activities.defaultProps = {
