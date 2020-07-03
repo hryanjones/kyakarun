@@ -140,6 +140,7 @@ class App extends React.Component {
               ↩
             </button>
           }
+          <img src='./favicon.svg' style={{height: '80%', border: '2px solid white', borderRadius: '5px', marginRight: '5px'}}></img>
           Kya Karun
         </div>
 
