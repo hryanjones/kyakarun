@@ -89,7 +89,7 @@ class What extends React.Component {
         {_getHeader(times, time, suggestion, rejected)}
         <form>
             {!time ? // haven't chosen a task yet
-              <div>
+            <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end'}}>
                 {times.map(t =>
                   <label className='choice' key={t} onClick={() => this.setState({time: t})}>
                     {minutesToHumanString(t)}

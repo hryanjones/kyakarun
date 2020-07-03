@@ -130,11 +130,8 @@ button.primary, .choice.primary, input.primary {
   background-color: #350072;
 }
 
-label.choice {
-  margin-top: 20px;
-}
 button.choice {
-  margin-top: 50px; /* spread these out so it's easier to not miss */
+  margin-top: 40px; /* spread these out so it's easier to not miss */
 }
 
 input[type='submit'], input[type='text'], select, textarea, .choice {
@@ -142,6 +139,10 @@ input[type='submit'], input[type='text'], select, textarea, .choice {
   padding: 5px;
   width: 95%;
   display: block;
+}
+label.choice {
+  margin-top: 20px;
+  width: unset;
 }
 
 textarea {
