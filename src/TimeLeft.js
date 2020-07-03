@@ -33,8 +33,13 @@ class TimeLeft extends React.Component {
 
     return (
       <div>
+        <h2>current activity:</h2>
         <h1 dangerouslySetInnerHTML={{__html: marked(activityName)}} />
         <p>{minutesToHumanString(minutesLeft)} left</p>
+        <button className='choice' onClick={this._done} style={{display: 'inline-block', width: 'auto'}}>
+          start again
+        </button>
+
       </div>
     );
   }
